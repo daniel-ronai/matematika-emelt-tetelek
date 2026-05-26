@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>7. tétel: Másodfokú egyenletek és egyenlőtlenségek. Másodfokúra visszavezethető egyenletek. Egyenletek ekvivalenciája, gyökvesztés, hamis gyök, ellenőrzés</h1>
+    <p class="subtitle">A nyitott mondatok logikai alapjai, a diszkrimináns szerepe, a Viète-formulák, valamint a nem-ekvivalens algebrai átalakítások veszélyei</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Matematika emelt szóbeli felkészítő</footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  {
+    id: 0,
+    title: "Az egyenlet és egyenlőtlenség logikai alapfogalmai",
+    tags: ["def"],
+    content: `
+      <div class="step-label">Az egyenlet modern, logikai alapú definíciója</div>
+      <div class="block def">
+        Az <b>egyenlet (vagy egyenlőtlenség)</b> olyan logikai függvény, amelynek állítása (nyitott mondat) két, egyenlőségjellel (vagy relációjellel) összekapcsolt matematikai kifejezés. A bal és jobb oldali kifejezések alkotják a struktúrát.<br><br>
+        • <b>Értelmezési tartomány ($D$):</b> A logikai függvény alaphalmaza, vagyis a valós számok azon legbővebb részhalmaza, amelyen a szereplő kifejezések mindegyike matematikailag értelmezhető (ha külön alaphalmaz nincs megadva).<br>
+        • <b>Megoldáshalmaz / Igazsághalmaz ($M$):</b> Az értelmezési tartomány azon részhalmaza, amelynek elemeit a változó(k) helyére behelyettesítve az állítás <u>igaz</u> logikai értéket ad. Egyenlet esetén a megoldáshalmaz elemeit <b>gyököknek</b> nevezzük.
+      </div>
+      <div class="block def">
+        <div class="step-label">Azonosság és ekvivalencia</div>
+        • <b>Azonosság:</b> Azokat az egyenleteket (vagy egyenlőtlenségeket) nevezzük azonosságnak, amelyeknél a megoldáshalmaz ($M$) teljes egészében megegyezik az értelmezési tartománnyal ($D$). Tehát a megengedett halmaz minden eleme gyök.<br>
+        • <b>Ekvivalencia:</b> Két egyenletet (vagy egyenlőtlenséget) akkor nevezünk <b>ekvivalensnek</b> (egyenértékűnek), ha az értelmezési tartományuk és a megoldáshalmazuk is hajszálpontosan megegyezik.
+      </div>`
+  },
+  {
+    id: 1,
+    title: "A másodfokú egyenlet, a megoldóképlet és diszkrimináns",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Általános alak</div>
+        Az egyismeretlenes másodfokú egyenlet algebrai átalakításokkal olyan redukált alakra hozható, melynek egyik oldalán egy másodfokú polinom, másik oldalán nulla áll. Kanonikus alakja:<br>
+        $$ax^2 + bx + c = 0 \\quad (a, b, c \\in \\mathbb{R}, \\, a \\neq 0)$$
+      </div>
+      <div class="block thm">
+        <div class="step-label">A megoldóképlet és a diszkrimináns ($D$)</div>
+        A másodfokú egyenlet valós gyökeit az alábbi <b>megoldóképlet</b> adja meg:<br>
+        $$x_{1,2} = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+        A gyökjel alatti kifejezést $D = b^2 - 4ac$ <b>diszkriminánsnak</b> nevezzük (a latin 'különválasztani' szóból). Értékétől függően három eset lehetséges a valós számok halmazán:<br><br>
+        1. <b>$D > 0$:</b> A négyzetgyök alatt pozitív szám áll. Az egyenletnek <b>két különböző valós gyöke</b> van ($x_1 \\neq x_2$).<br>
+        2. <b>$D = 0$:</b> A négyzetgyök értéke nulla. Az egyenletnek <b>két egybeeső valós gyöke</b> van (más megközelítésben egyértelmű egyszeres valós gyök: $x = -\\frac{b}{2a}$).<br>
+        3. <b>$D < 0$:</b> Negatív számból a valós számok körében nem vonható páros kitevőjű gyök. Az egyenletnek <b>nincs valós gyöke</b> (a komplex számok körében ekkor két konjugált komplex gyök létezik).
+      </div>`
+  },
+  {
+    id: 2,
+    title: "A megoldóképlet precíz bizonyítása",
+    tags: ["biz"],
+    content: `
+      <div class="block biz">
+        <div class="step-label">Tétel bizonyítása teljes négyzetté kiegészítéssel</div>
+        Kiinduló egyenlet: $ax^2 + bx + c = 0$, ahol $a \\neq 0$.<br>
+        Mivel $a \\neq 0$, az egyenlet mindkét oldalát büntetlenül eloszthatjuk $a$-val:<br>
+        $$x^2 + \\frac{b}{a}x + \\frac{c}{a} = 0$$
+        Alakítsuk át a kifejezést <b>teljes négyzetté</b> az $(A+B)^2 = A^2 + 2AB + B^2$ azonosság sémájára. Ehhez a középső tagot tekinthetjük a kétszeres szorzatnak ($2 \\cdot x \\cdot \\frac{b}{2a}$):<br>
+        $$\\left(x + \\frac{b}{2a}\\right)^2 - \\left(\\frac{b}{2a}\\right)^2 + \\frac{c}{a} = 0$$
+        Fejtsük ki a levont négyzetet, és vigyük át a konstans tagokat a jobb oldalra:<br>
+        $$\\left(x + \\frac{b}{2a}\\right)^2 - \\frac{b^2}{4a^2} + \\frac{c}{a} = 0 \\implies \\left(x + \\frac{b}{2a}\\right)^2 = \\frac{b^2}{4a^2} - \\frac{c}{a}$$
+        Hozzunk közös nevezőre a jobb oldalon ($4a^2$):<br>
+        $$\\left(x + \\frac{b}{2a}\\right)^2 = \\frac{b^2 - 4ac}{4a^2}$$
+        Végezzünk négyzetgyökvonást mindkét oldalon. Mivel $4a^2$ gyöke $2|a|$, a jobb oldalon megjelenik a $\\pm$ jel, a számlálóba pedig behelyettesítjük a diszkriminánst ($D = b^2 - 4ac$):<br>
+        $$x + \\frac{b}{2a} = \\pm\\frac{\\sqrt{b^2 - 4ac}}{2a}$$
+        Fejezzük ki az $x$-et kivonással, és írjuk fel közös nevezőre hozva:<br>
+        $$x = -\\frac{b}{2a} \\pm \\frac{\\sqrt{b^2 - 4ac}}{2a} \\implies x_{1,2} = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
+        A tétel igazolását ezzel lezártuk. $\\blacksquare$
+      </div>`
+  },
+  {
+    id: 3,
+    title: "A másodfokú polinomok gyöktényezős alakja és a Viète-formulák",
+    tags: ["thm"],
+    content: `
+      <div class="block thm">
+        <div class="step-label">Gyöktényezős (gyökös) alak</div>
+        Ha az $ax^2 + bx + c = 0$ egyenlet diszkriminánsa nem negatív ($D \\ge 0$), és valós gyökei $x_1$ és $x_2$, akkor a másodfokú főpolinom felírható elsőfokú tényezők szorzataként:<br>
+        $$ax^2 + bx + c = a(x - x_1)(x - x_2)$$
+        Amennyiben $D < 0$, a polinom a valós számok halmazán nem bontható lineáris tényezők szorzatára (irreducibilis).
+      </div>
+      <div class="block thm">
+        <div class="step-label">Gyökök és együtthatók közötti összefüggések (Viète-képletek)</div>
+        Ha az $ax^2 + bx + c = 0$ ($a \\neq 0$) egyenlet rendelkezik valós gyökökkel, akkor a gyökök és az eredeti együtthatók között az alábbi szigorú algebrai kapcsolatok állnak fenn:<br>
+        $$\\text{I. } x_1 + x_2 = -\\frac{b}{a}$$
+        $$\\text{II. } x_1 \\cdot x_2 = \\frac{c}{a}$$
+        <i>Bizonyítási vázlat:</i> Ha a gyöktényezős alakban ($a(x-x_1)(x-x_2)=0$) elvégezzük a zárójelek felbontását: $a[x^2 - (x_1+x_2)x + x_1x_2] = ax^2 - a(x_1+x_2)x + ax_1x_2$, majd ezt együtthatónként egyenlővé tesszük az eredeti $ax^2 + bx + c$ polinom tagjaival, azonnal megkapjuk a formulákat.
+      </div>`
+  },
+  {
+    id: 4,
+    title: "Másodfokú egyenlőtlenségek megoldási stratégiái",
+    tags: ["thm"],
+    content: `
+      <div class="step-label">Grafikus és algebrai megközelítés</div>
+      <div class="block thm">
+        A másodfokú egyenlőtlenségeket a legbiztonságosabban és leggyorsabban <b>grafikus úton</b>, függvényábrázolással oldjuk meg. Nullára rendezés után megkeressük a hozzárendelt másodfokú függvény zérushelyeit (egyenletmegoldással), felvázoljuk a parabolát (ügyelve a főegyüttható előjele miatti állásra: konvex/konkáv), majd leolvassuk a keresett tartományt.<br><br>
+        • <b>Példa (Egyszerű eset):</b> $x(x+6) \\le 27$<br>
+        Zárójelfelbontás és nullára redukálás után: $x^2 + 6x - 27 \\le 0$.<br>
+        A másodfokú egyenlet gyökei a megoldóképlettel: $x_1 = -9$ és $x_2 = 3$.<br>
+        Mivel a főegyüttható ($a=1$) pozitív, a parabola felfelé nyitott (konvex). A függvény ott kisebb vagy egyenlő nullánál, ahol a görbe a tengely alatt fut vagy érinti azt.<br>
+        <b>Megoldáshalmaz:</b> $M = [-9; 3]$.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Törtes egyenlőtlenségek és előjelvizsgálat</div>
+        Ha az egyenlőtlenség törtes alakú, tilos az ismeretlennel (nevezővel) kapásból átszorozni, mert nem ismerjük annak előjelét, és a relációjel megfordulhat! A helyes lépéssor: <u>nullára rendezés, közös nevezőre hozás, a számláló és nevező gyöktényezős szorzattá alakítása</u>, végül **előjeltáblázat** készítése.<br><br>
+        • <b>Mintafeladat:</b> $\\frac{x^2 - 3x}{x^2 - 4x + 3} < 0 \\implies \\frac{x(x-3)}{(x-1)(x-3)} < 0$<br>
+        Az értelmezési tartomány: $x \\neq 1$ és $x \\neq 3$. Az $x-3$ tényezővel egyszerűsíthetünk (ha kikötöttük, hogy nem nulla), így a vizsgálandó kifejezés: $\\frac{x}{x-1} < 0$.<br>
+        A tört értéke akkor negatív, ha a számláló és nevező ellentétes előjelű. Ez pontosan a $0$ és $1$ közötti nyílt intervallumon teljesül.<br>
+        <b>Megoldáshalmaz:</b> $M = ]0; 1[$.
+      </div>`
+  },
+  {
+    id: 5,
+    title: "Másodfokúra visszavezethető magasabb fokú és transzcendens egyenletek",
+    tags: ["def"],
+    content: `
+      <div class="step-label">Új ismeretlen bevezetése (Szubsztitúció)</div>
+      <div class="block def">
+        Számos bonyolult struktúrájú egyenlet alkalmas helyettesítéssel másodfokúvá alakítható. A leggyakoribb típusok:<br><br>
+        1. <b>Bikvadratikus (negyedfokú) egyenletek:</b><br>
+        $$ax^4 + bx^2 + c = 0 \\quad \\xrightarrow{\\text{helyettesítés: } y = x^2} \\quad ay^2 + by + c = 0$$
+        A másodfokú egyenlet megoldása után kapott $y$ értékekből gyökvonással kapjuk vissza az eredeti $x$ megoldásokat (itt ügyelni kell, hogy negatív $y$-ra nincs valós megoldás).<br><br>
+        2. <b>Exponenciális szerkezetek:</b><br>
+        $$a \\cdot 4^x + b \\cdot 2^x + c = 0 \\implies a \\cdot (2^x)^2 + b \\cdot (2^x) + c = 0 \\quad \\xrightarrow{y = 2^x \\, (y>0)} \\quad ay^2 + by + c = 0$$
+        3. <b>Trigonometrikus egyenletek (a Pythagoras-i azonossággal):</b><br>
+        $$3\\cos^2 x + 2\\sin x = 1 \\quad \\xrightarrow{\\cos^2 x = 1 - \\sin^2 x} \\quad 3(1 - \\sin^2 x) + 2\\sin x = 1$$
+        Ez a $-3\\sin^2 x + 2\\sin x + 2 = 0$ egyenletre vezet, ami az $y = \\sin x \\, (|y| \\le 1)$ helyettesítéssel tiszta másodfokú egyenlet.
+      </div>`
+  },
+  {
+    id: 6,
+    title: "Ekvivalencia-sérülések: Gyökvesztés és Hamis gyökök",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Miért és hogyan sérül az ekvivalencia?</div>
+        Az egyenletmegoldás során végrehajtott algebrai lépések egy része nem ekvivalens átalakítás. Ha egy lépés megváltoztatja (szűkíti vagy bővíti) a kifejezés értelmezési tartományát, az egyenlet logikai szerkezete sérül.
+      </div>
+      <div class="block thm">
+        <div class="step-label">1. Hamis gyökök megjelenése (Értelmezési tartomány bővülése)</div>
+        Leggyakrabban a <b>négyzetre emelésnél</b> (pl. négyzetgyökös egyenleteknél) fordul elő, mivel a négyzetre emelés nem fordítható meg egyértelműen ($A^2 = B^2 \\implies A = B$ vagy $A = -B$). Olyan gyökök is keletkezhetnek, amelyek az eredeti egyenletnek nem megoldásai.<br>
+        • <b>Logaritmikus példa az ÉT bővülésére:</b><br>
+        Tekintsük a $2\\lg x = 2$ egyenletet. Itt a kikötés: $x > 0$.<br>
+        Ha reflexből alkalmazzuk a hatvány azonosságát: $\\lg(x^2) = 2$. Az új kifejezésnél az értelmezési tartomány kibővült ($x^2 > 0 \\implies x \\neq 0$).<br>
+        A definíció alapján: $x^2 = 10^2 = 100 \\implies x_{1,2} = \\pm 10$.<br>
+        Az $x = -10$ egy **hamis gyök**, mert az eredeti $2\\lg x$ kifejezésbe behelyettesítve negatív számnak nem létezik a valós logaritmusa.
+      </div>
+      <div class="block thm">
+        <div class="step-label">2. Gyökvesztés (Értelmezési tartomány szűkülése / Ismeretlennel való osztás)</div>
+        Gyököt veszítünk, ha az egyenlet mindkét oldalát elosztjuk egy olyan kifejezéssel, amely a változó bizonyos értékére nullává válhat, vagy olyan azonosságot használunk, ami szűkíti a tartományt.<br>
+        • <b>Példa gyökvesztésre:</b><br>
+        Tekintsük a $\\lg(x^2) = 2$ egyenletet ($x \\neq 0$).<br>
+        Ha átírjuk a $2\\lg x = 2$ alakra, az értelmezési tartomány leszűkül a pozitív számokra ($x>0$).<br>
+        Megoldva: $\\lg x = 1 \\implies x = 10$.<br>
+        Ezzel **elveszítettük** az $x = -10$ valós megoldást, ami az eredeti $\\lg(x^2) = 2$ egyenletnek tökéletesen igaz gyöke volt (hiszen $(-10)^2 = 100$).
+      </div>
+      <div class="block thm">
+        <div class="step-label">A módszertani konklúzió: Az ellenőrzés kötelezettsége</div>
+        Mivel a bonyolultabb (gyökös, törtes, logaritmusos) egyenleteknél a nem-ekvivalens lépések sokszor elkerülhetetlenek, a matematika szigorú szabályai szerint **a kapott értékeknek az eredeti, kiindulási egyenletbe való behelyettesítéssel történő ellenőrzése a megoldási folyamat szerves, kötelező részét képezi**, nem csupán egy opcionális önellenőrzés!
+      </div>`
+  },
+  {
+    id: 7,
+    title: "Gyakorlati és koordináta-geometriai alkalmazások",
+    tags: ["app"],
+    content: `
+      <div class="step-label">Hol alkalmazzuk a másodfokú egyenleteket?</div>
+      <div class="block app">
+        • <b>Koordináta-geometria:</b> Kiemelkedő fontosságú a kör, a parabola, az ellipszis és a hiperbola egyenleteinek vizsgálatakor. Például egy egyenes és egy kör metszéspontjainak meghatározása mindig egy másodfokú egyenletrendszerre vezet, ahol a diszkrimináns értéke megmondja a geometriai viszonyt ($D>0$: két metszéspont/szelő, $D=0$: egy közös pont/érintő, $D<0$: nincs közös pont/kívülálló egyenes).<br>
+        • <b>Fizika (Kinematika és dinamika):</b> A függőleges és ferde hajítások, valamint az egyenletesen változó mozgások úttörvénye ($s = v_0t + \\frac{a}{2}t^2$) az idő ($t$) függvényében tisztán másodfokú kapcsolat. Ha azt keressük, mikor ér el a test egy bizonyos magasságot, másodfokú egyenletet kell megoldanunk.<br>
+        • <b>Közgazdaságtan (Profitoptimalizálás):</b> A gazdasági folyamatokban a bevételi és költségfüggvények modellezésekor a profitfüggvényt gyakran egy lefelé nyitott parabolával írják le. A maximális profit helyének kiszámítása (a parabola csúcspontja: $x_0 = -\\frac{b}{2a}$) vagy a fedezeti pontok meghatározása (ahol a profit nulla) tisztán másodfokú egyenletet igényel.
+      </div>`
+  }
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>6. tétel: A logaritmus fogalma és azonosságai. Az exponenciális és a logaritmusfüggvény. Az inverzfüggvény</h1>
+    <p class="subtitle">A műveletek megfordíthatósága, a természetes alapú logaritmus, az alapváltoztatás, valamint a kölcsönösen egyértelmű függvények inverze</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Matematika emelt szóbeli felkészítő</footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  {
+    id: 0,
+    title: "Az exponenciális függvény és jellemzése",
+    tags: ["def", "thm"],
+    content: `
+      <div class="step-label">Alapdefiníció és az alap ($a$) szerepe</div>
+      <div class="block def">
+        A hatványozás fogalmának kiterjesztése tetszőleges valós kitevőre lehetővé tette az $f: \\mathbb{R} \\rightarrow \\mathbb{R}^+, \\, f(x) = a^x$ függvény értelmezését, amelyet <b>exponenciális függvénynek</b> nevezünk. A valós értelmezhetőség miatt kikötjük, hogy az alap pozitív legyen ($a > 0$).
+      </div>
+      <div class="block thm">
+        <div class="step-label">Az exponenciális függvény minőségi jellemzése</div>
+        A függvény viselkedése döntően az $a$ alap értékétől függ. Három esetet különböztetünk meg:
+        
+        <table style="width:100%; border-collapse: collapse; font-size: 12px; text-align: left; margin-top: 10px;">
+          <tr style="border-bottom: 2px solid var(--border); font-weight:600; background-color: rgba(0,0,0,0.02);">
+            <td style="padding: 5px;">Szempont</td>
+            <td style="padding: 5px; color: var(--purple);">$a > 1$</td>
+            <td style="padding: 5px; color: var(--muted);">$a = 1$</td>
+            <td style="padding: 5px; color: var(--teal);">$0 < a < 1$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Értelm. Tart. ($D_f$)</b></td><td>$\\mathbb{R}$</td><td>$\\mathbb{R}$</td><td>$\\mathbb{R}$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Értékkészlet ($R_f$)</b></td><td>$\\mathbb{R}^+$ (vagy $]0; +\\infty[$)</td><td>$\\{1\\}$</td><td>$\\mathbb{R}^+$ (vagy $]0; +\\infty[$)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Zérushely</b></td><td>Nincs</td><td>Nincs</td><td>Nincs</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Szélsőérték</b></td>
+            <td>Nincs (felülről nem korlátos)</td>
+            <td>Minden pontban $y = 1$</td>
+            <td>Nincs (felülről nem korlátos)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Monotonitás</b></td>
+            <td style="font-weight:600; background-color: var(--purple-bg);">Szigorúan monoton növekvő</td>
+            <td>Konstans</td>
+            <td style="font-weight:600; background-color: var(--teal-bg);">Szigorúan monoton csökkenő</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Görbület</b></td>
+            <td>Konvex</td>
+            <td>Egyenes</td>
+            <td>Konvex</td>
+          </tr>
+        </table>
+        <br>
+        • <i>Megjegyzés a periodikussághoz:</i> Az $a=1$ konstans eset technikailag periodikusnak tekinthető, de minimális periódushossza (alapperiódusa) nincs értelmezve. A többi eset nem periodikus és nem mutat paritást (sem nem páros, sem nem páratlan).
+      </div>`
+  },
+  {
+    id: 1,
+    title: "A logaritmus fogalma és a különleges alapok",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        <div class="step-label">A logaritmus mint művelet</div>
+        A hatványozás során adott az $a$ alap és az $x$ kitevő, és keressük a hatvány értékét ($b = a^x$). E művelet megfordítása a <b>logaritmus</b>: itt az $a$ alap és a $b$ hatványérték ismeretében keressük azt a kitevőt, amelyre az alapot emelve megkapjuk a hatványértéket.<br><br>
+        <b>Definíció:</b> $\\log_a b$ jelenti azt a hatványkitevőt, amelyre a pozitív, egységtől különböző $a$ alapot emelve a pozitív $b$ számot kapjuk.<br>
+        $$\\log_a b = x \\iff a^x = b$$
+        <b>Szigorú kritériumok (Értelmezési tartomány):</b> $a > 0, \\, a \\neq 1$ és $b > 0$.<br>
+        <i>Miért nem lehet az alap 1?</i> Mivel bármely valós $x$-re $1^x = 1$, ezért $1$-es alapú hatvánnyal nem tudnánk tetszőleges pozitív számot (pl. 5-öt) előállítani, így az $1$-es alapú logaritmus értelmezhetetlen.
+      </div>
+      <div class="block def">
+        <div class="step-label">A gyakorlatban használt kitüntetett alapok</div>
+        Bár az alap elvileg bármilyen pozitív szám lehet (kivéve az 1), a tudományban és a gyakorlatban két kiemelt alappal dolgozunk:<br><br>
+        • <b>10-es alapú logaritmus ($\\,\\lg b$):</b> Jelölése $\\log_{10} b$ helyett egyszerűen $\\lg b$. A tizes számrendszerünk miatt a mérnöki számításokban elterjedt.<br>
+        • <b>Természetes alapú logaritmus ($\\,\\ln b$):</b> Jelölése a latin <i>logaritmus naturalis</i> kifejezésből ered. Alapja az <b>$e$ szám (Euler-féle szám)</b>, amely egy irracionális határérték:<br>
+        $$e = \\lim_{n \\rightarrow \\infty} \\left(1 + \\frac{1}{n}\\right)^n \\approx 2,71828182845...$$
+        Az $e$ alapú logaritmus rendkívül fontos szerepet játszik a felsőbb matematikában, a fizikában és a pénzügyi folyamatok leírásában.
+      </div>`
+  },
+  {
+    id: 2,
+    title: "A logaritmus azonosságai",
+    tags: ["thm"],
+    content: `
+      <div class="block thm">
+        <div class="step-label">A négy alapvető logaritmus-azonosság</div>
+        Ha $a > 0, \\, a \\neq 1$ (logaritmus alapja), $x, y > 0$ (pozitív argumentumok) és $n \\in \\mathbb{R}$, akkor az alábbi azonosságok érvényesek:
+        
+        <div style="margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.01); border-left: 3px solid var(--amber);">
+          1. <b>Szorzat logaritmusa:</b> $\\log_a(x \\cdot y) = \\log_a x + \\log_a y$<br>
+          2. <b>Hányados logaritmusa:</b> $\\log_a\\left(\\frac{x}{y}\\right) = \\log_a x - \\log_a y$<br>
+          3. <b>Hatvány logaritmusa:</b> $\\log_a(x^n) = n \\cdot \\log_a x$<br>
+          4. <b>Áttérés új alapra (Alapváltoztatási képlet):</b> $\\log_a x = \\frac{\\log_c x}{\\log_c a} \\quad (c > 0, \\, c \\neq 1)$
+        </div>
+        
+        <span style="color:var(--amber)"><b>Történelmi és gyakorlati jelentőség:</b> Az (1) és (2) azonosságok régebben (a zsebszámológépek és számítógépek elterjedése előtt) gyökeresen megváltoztatták a tudományos számításokat. A bonyolult szorzásokat összeadássá, az osztásokat kivonássá alakították át. Ehhez logaritmustáblázatokat vagy mechanikus <b>logarléceket</b> használtak. A (4)-es azonosság segítségével pedig a mai napig tetszőleges alapú logaritmust vissza tudunk vezetni a számológépek által ismert $\\lg$ vagy $\\ln$ gombokra.</span>
+      </div>`
+  },
+  {
+    id: 3,
+    title: "A szorzat logaritmusára vonatkozó azonosság bizonyítása",
+    tags: ["biz"],
+    content: `
+      <div class="block biz">
+        <div class="step-label">Tétel: $\\log_a(x \\cdot y) = \\log_a x + \\log_a y$</div>
+        <b>Bizonyítás:</b><br>
+        Vezessük be a következő jelöléseket a logaritmus alapdefiníciója alapján:<br>
+        Let $u = \\log_a x \\implies a^u = x$<br>
+        Let $v = \\log_a y \\implies a^v = y$<br><br>
+        Tekintsük az $x$ és $y$ számok szorzatát, és helyettesítsük be a fenti exponenciális alakokat:<br>
+        $$x \\cdot y = a^u \\cdot a^v$$
+        Az azonos alapú hatványok szorzásának azonossága alapján a kitevők összeadódnak:<br>
+        $$x \\cdot y = a^{u + v}$$
+        Most alkalmazzuk a logaritmus definícióját erre a kapott egyenlőségre (azaz keressük azt a kitevőt, amire az $a$-t emelve $x \\cdot y$-t kapunk):<br>
+        $$\\log_a(x \\cdot y) = u + v$$
+        Helyettesítsük vissza $u$ és $v$ eredeti logaritmikus kifejezéseit:<br>
+        $$\\log_a(x \\cdot y) = \\log_a x + \\log_a y$$
+        Mivel az exponenciális függvény szigorúan monoton (így kölcsönösen egyértelmű), ez a hozzárendelés egyértelmű, így a tétel igazolása kész. $\\blacksquare$
+      </div>`
+  },
+  {
+    id: 4,
+    title: "A logaritmusfüggvény és jellemzése",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <div class="step-label">A logaritmusfüggvény definíciója</div>
+        Azt a függvényt, amely minden pozitív valós számhoz hozzárendeli annak $a$ alapú logaritmusát, <b>logaritmusfüggvénynek</b> nevezzük.<br>
+        $$f: \\mathbb{R}^+ \\rightarrow \\mathbb{R}, \\quad f(x) = \\log_a x \\quad (a > 0, \\, a \\neq 1)$$
+        Szerkezetileg a logaritmusfüggvény nem más, mint az ugyanolyan alapú exponenciális függvény inverze.
+      </div>
+      <div class="block thm">
+        <div class="step-label">A logaritmusfüggvény minőségi tulajdonságai</div>
+        <table style="width:100%; border-collapse: collapse; font-size: 12px; text-align: left; margin-top: 10px;">
+          <tr style="border-bottom: 2px solid var(--border); font-weight:600; background-color: rgba(0,0,0,0.02);">
+            <td style="padding: 5px;">Szempont</td>
+            <td style="padding: 5px; color: var(--purple);">$a > 1$</td>
+            <td style="padding: 5px; color: var(--teal);">$0 < a < 1$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Értelm. Tart. ($D_f$)</b></td><td>$\\mathbb{R}^+$ (vagy $]0; +\\infty[$)</td><td>$\\mathbb{R}^+$ (vagy $]0; +\\infty[$)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Értékkészlet ($R_f$)</b></td><td>$\\mathbb{R}$</td><td>$\\mathbb{R}$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Zérushely</b></td><td>$x = 1$ (mivel $\\log_a 1 = 0$)</td><td>$x = 1$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Szélsőértékek</b></td><td>Nincs</td><td>Nincs</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Monotonitás</b></td>
+            <td style="font-weight:600; background-color: var(--purple-bg);">Szigorúan monoton növekvő</td>
+            <td style="font-weight:600; background-color: var(--teal-bg);">Szigorúan monoton csökkenő</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Görbület / Alak</b></td>
+            <td><b>Konkáv</b> (alulról nézve)</td>
+            <td><b>Konvex</b> (alulról nézve)</td>
+          </tr>
+        </table>
+        <br>
+        • <b>Közös tulajdonságok:</b> Egyik eset sem mutat paritást (sem nem páros, sem nem páratlan), nem periodikusak, és grafikonjaik rohannak az $y$-tengelyhez (függőleges aszimptota az $x=0$ helyen).
+      </div>`
+  },
+  {
+    id: 5,
+    title: "Az inverzfüggvény fogalma és geometriai jelentése",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Az inverzfüggvény precíz definíciója</div>
+        Legyen $f: D_f \\rightarrow R_f$ egy <b>kölcsönösen egyértelmű (injektív)</b> függvény, ami azt jelenti, hogy a különböző $x$ értékekhez különböző $y$ értékeket rendel. Ekkor létezik az $f$ függvény <b>inverzfüggvénye</b> (jele: $f^{-1}$), amely az $R_f$ elemeihez rendel egyértelmű $D_f$-beli elemet úgy, hogy:<br>
+        $$f^{-1}(y) = x \\iff f(x) = y$$
+        Erre teljesül, hogy $f^{-1}(f(x)) = x$ minden $x \\in D_f$ esetén, és $f(f^{-1}(y)) = y$ minden $y \\in R_f$ esetén.<br>
+        Az inverzség szimmetrikus reláció: ha $g$ inverze $f$-nek, akkor $f$ is inverze $g$-nek.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Geometriai tulajdonság és az értelmezési tartomány leszűkítése</div>
+        • <b>Tükrözési szabály:</b> A definíció közvetlen következménye, hogy a koordináta-rendszerben az $f$ és az $f^{-1}$ függvények grafikonjai <u>egymás tükörképei az $y = x$ egyenesre (főtengelyre) nézve</u>.<br><br>
+        • <b>A tartomány leszűkítése:</b> Sok függvény (pl. a páros kitevőjű $x^2$, vagy a trigonometrikus $\\sin x$) nem injektív a teljes értelmezési tartományán, így a teljes halmazon nem megfordíthatók. Ahhoz, hogy értelmezhessük az inverzüket (pl. a négyzetgyökfüggvényt vagy az arkuszfüggvényeket: $\\arcsin x$), a $D_f$-et le kell szűkíteni egy olyan részintervallumra, ahol a függvény szigorúan monoton (így már injektívvé válik).
+      </div>`
+  },
+  {
+    id: 6,
+    title: "Gyakorlati és interdiszciplináris alkalmazások",
+    tags: ["app"],
+    content: `
+      <div class="step-label">Hol találkozunk exponenciális és logaritmikus összefüggésekkel?</div>
+      <div class="block app">
+        • <b>Pénzügyi matematika:</b> A kamat-, kamatoskamat-számítás, tőkenövekedés, törlesztőrészletek és annuitások kiszámítása tiszta exponenciális és logaritmikus egyenletekre épül.<br>
+        • <b>Fizika:</b><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;– <i>Radioaktív bomlás:</i> $N(t) = N_0 \\cdot e^{-\\lambda t}$ (időbeli lefolyása exponenciálisan csökkenő).<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;– <i>Barometrikus magasságformula:</i> A légnyomás magassággal való csökkenését írja le.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;– <i>Akusztika (Hangerősség):</i> Az emberi fül ingerküszöbe logaritmikus. A hangerősséget mérő <b>decibel (dB) skála</b> logaritmikus alapú, ahogy a modern audióeszközök hangerőszabályzói is ezt a görbét követik.<br>
+        • <b>Kémia (pH-skála):</b> A vizes oldatok kémhatását (savasságát/lúgosságát) meghatározó pH-érték az oxóniumion-koncentráció negatív tízes alapú logaritmusa: $\\text{pH} = -\\lg[H_3O^+]$.<br>
+        • <b>Biológia és demográfia:</b> A korlátozatlan baktériumtenyészetek szaporodása, a járványok kezdeti terjedése exponenciális modellt követ.<br>
+        • <b>Hálózattudomány:</b> Az internetes csomópontok, szociális hálózatok kapcsolatrendszereiben kimutathatóak az ún. <i>hatványfüggvény-eloszlások</i> (skálafiók-mentes hálózatok).
+      </div>`
+  }
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>
