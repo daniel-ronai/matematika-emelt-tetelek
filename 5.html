@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>5. tétel: Hatványozás, a hatványfogalom kiterjesztése, a hatványozás azonosságai. Az n-edik gyök fogalma. A négyzetgyök azonosságai. Hatványfüggvények és a négyzetgyökfüggvény</h1>
+    <p class="subtitle">A permanenciaelv, a tört- és irracionális kitevők, a gyökvonás azonosságai, valamint a hatvány- és gyökfüggvények minőségi elemzése</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Matematika emelt szóbeli felkészítő</footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  {
+    id: 0,
+    title: "A hatványozás alapfogalma és azonosságai",
+    tags: ["def", "thm"],
+    content: `
+      <div class="step-label">A hatványozás definíciója pozitív egész kitevőre</div>
+      <div class="block def">
+        A hatványozás egy kétváltozós matematikai művelet, amely eredetileg egy olyan szorzat rövid felírására szolgált, amelynek minden tényezője megegyezik.<br>
+        $\\forall a \\in \\mathbb{R}$ és $\\forall n \\in \\mathbb{Z}^+ \\setminus \\{1\\}$ esetén:<br>
+        $$a^n = \\underbrace{a \\cdot a \\cdot a \\dots a}_{n \\text{ darab}}$$
+        Ahol $a$ a hatvány <b>alapja</b>, $n$ a hatvány <b>kitevője</b>, és $a^n$ a hatvány <b>értéke</b>. Megállapodás szerint: $a^1 = a$.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Alapvető hatványazonosságok</div>
+        Ha $a, b \\in \\mathbb{R}$ és $n, m \\in \\mathbb{Z}^+$, akkor az alábbi azonosságok érvényesek:<br>
+        1. <b>Azonos alapú hatványok szorzása:</b> $a^n \\cdot a^m = a^{n+m}$<br>
+        2. <b>Azonos alapú hatványok osztása:</b> $\\frac{a^n}{a^m} = a^{n-m} \\quad (a \\neq 0, n \\ge m)$<br>
+        3. <b>Azonos kitevőjű hatványok szorzása:</b> $a^n \\cdot b^n = (a \\cdot b)^n$<br>
+        4. <b>Azonos kitevőjű hatványok osztása:</b> $\\frac{a^n}{b^n} = \\left(\\frac{a}{b}\\right)^n \\quad (b \\neq 0)$<br>
+        5. <b>Hatvány hatványozása:</b> $(a^n)^m = a^{n \\cdot m}$
+      </div>`
+  },
+  {
+    id: 1,
+    title: "A kitevő kiterjesztése egész számokra (A permanenciaelv)",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block thm">
+        <div class="step-label">A permanenciaelv</div>
+        Ahhoz, hogy a hatványozás azonosságai (például az azonos alapú hatványok osztásánál kapott $a^{n-m}$) ne csak szigorúan vett pozitív egész és $n > m$ feltétel mellett működjenek, kiterjesztjük a fogalmat a $0$ és a negatív egész kitevőkre is. Ezt a kiterjesztést úgy kell elvégezni, hogy a korábbi azonosságok érvényben maradjanak. Ezt a módszertani vezérelvet nevezzük <b>permanenciaelvnek</b>.
+      </div>
+      <div class="block def">
+        <div class="step-label">A 0 és a negatív egész kitevő definíciója</div>
+        • Ha $a \\neq 0$, akkor: $a^0 = 1$.<br>
+        • Ha $a \\neq 0$ és $n \\in \\mathbb{Z}^+$, akkor: $a^{-n} = \\frac{1}{a^n}$.<br><br>
+        <span style="color:var(--amber)"><b>Vizsgáztatói finomság ($0^0$ esete):</b> A $0^0$ kifejezést a számelméletben és az algebrai alapokban nem lehet ellentmondásmentesen értelmezni. Ha a $0^n = 0$ szabályt nézzük ($n>0$), akkor $0$ kellene legyen, de ha az $a^0 = 1$ szabályt ($a \\neq 0$), akkor $1$. Bizonyos esetekben (például a polinomok felírásakor vagy a Binomiális tételnél: $\\sum_{i=0}^n \\binom{n}{i}x^i y^{n-i}$) technikai okokból célszerű és szokás a $0^0 = 1$ értéket használni, hogy a képlet $x=0$ esetén is folytonos maradjon.</span>
+      </div>`
+  },
+  {
+    id: 2,
+    title: "Racionális és irracionális kitevőjű hatványok",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Racionális (tört) kitevőjű hatvány</div>
+        A permanenciaelvet követve, a hatvány hatványozásának azonosságát ($(a^n)^m = a^{n \\cdot m}$) felhasználva terjesztjük ki a hatványozást a racionális számokra ($q \\in \\mathbb{Z}^+, p \\in \\mathbb{Z}$). Az egyértelműség és a valós értékek megtartása miatt negatív számok törtkitevős hatványát nem értelmezzük.<br>
+        Ha $a > 0$ és $\\frac{p}{q} \\in \\mathbb{Q}$ ($q > 1$), akkor:<br>
+        $$a^{\\frac{p}{q}} = \\sqrt[q]{a^p}$$
+        A $0$ alap esetén csak a pozitív racionális kitevőt értelmezzük, és $0^{\\frac{p}{q}} = 0$.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Irracionális kitevőjű hatvány</div>
+        Pozitív valós alapok esetén a hatványozás kiterjeszthető tetszőleges $x$ irracionális kitevőre is. Ez a <b>teljességi axiómán</b> alapszik (minden felülről korlátos nemüres halmaznak van legkisebb felső korlátja – szuprémuma).<br>
+        Ha $a > 1$, az $f(x)=a^x$ ($x \\in \\mathbb{Q}$) függvény szigorúan monoton növekvő. Ha $x$ egy irracionális szám, akkor közelíthetjük őt alulról és felülről racionális számok sorozatával ($r < x < s$).<br>
+        Definíció szerint, ha $a > 1$ és $x \\in \\mathbb{R} \\setminus \\mathbb{Q}$, akkor:<br>
+        $$a^x = \\sup\\{a^r \\mid r \\in \\mathbb{Q}, r < x\\} = \\inf\\{a^s \\mid s \\in \\mathbb{Q}, s > x\\}$$
+        Amennyiben $0 < a < 1$, a monotonitás megfordul, így a szuprémum és az infimum szerepet cserél. $1^x = 1$ minden valós $x$-re, és $0^x = 0$ minden pozitív irracionális $x$-re.
+      </div>`
+  },
+  {
+    id: 3,
+    title: "Az n-edik gyök fogalma",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        <div class="step-label">A gyökvonás mint a hatványozás megfordítása</div>
+        A hatványozás megfordítása során ismert a hatvány értéke ($a$) és a kitevő ($n$), és keressük az alapot. Az egyértelműség biztosítása érdekében külön kell definiálnunk a gyökvonást páros és páratlan gyökkitevőkre.
+      </div>
+      <div class="block def">
+        <b>1. Ha a gyökkitevő páros ($n = 2k, \\, k \\in \\mathbb{Z}^+$):</b><br>
+        $\\sqrt[n]{a}$ jelentése: tetszőleges <u>nemnegatív</u> $a$ valós szám esetén az a <u>nemnegatív</u> valós szám, amelynek $n$-edik hatványa $a$.<br>
+        $$\\sqrt[2k]{a} = b, \\quad \\text{ahol } b \\ge 0 \\text{ és } b^{2k} = a \\quad (a \\ge 0)$$
+        
+        <b>2. Ha a gyökkitevő páratlan ($n = 2k + 1, \\, k \\in \\mathbb{Z}^+$ vagy $n=1$):</b><br>
+        $\\sqrt[n]{a}$ jelentése: tetszőleges $a$ valós szám esetén az az egyértelmű valós szám, amelynek $n$-edik hatványa $a$. Itt az alap lehet negatív is.<br>
+        $$\\sqrt[2k+1]{a} = b, \\quad \\text{ahol } b^{2k+1} = a \\quad (a \\in \\mathbb{R})$$
+      </div>`
+  },
+  {
+    id: 4,
+    title: "A négyzetgyök azonosságai és tételbizonyítás",
+    tags: ["thm", "biz"],
+    content: `
+      <div class="block thm">
+        <div class="step-label">A négyzetgyökvonás azonosságai</div>
+        Ha $a, b \\in \\mathbb{R}_0^+$, akkor a hatványazonosságok alapján igazolhatóak az alábbiak:<br>
+        6. <b>Szorzat négyzetgyöke:</b> $\\sqrt{a \\cdot b} = \\sqrt{a} \\cdot \\sqrt{b}$<br>
+        7. <b>Tört négyzetgyöke:</b> $\\sqrt{\\frac{a}{b}} = \\frac{\\sqrt{a}}{\\sqrt{b}} \\quad (b > 0)$<br>
+        8. <b>Gyök hatványozása:</b> $(\\sqrt{a})^n = \\sqrt{a^n} \\quad (n \\in \\mathbb{Z})$<br><br>
+        <span style="color:var(--amber)"><b>Kritikus azonosság:</b> Bármely valós $a$ számra $\\sqrt{a^2} = |a|$. (Például $\\sqrt{(-5)^2} = |-5| = 5$).</span><br>
+        <i>Megjegyzés: Ezek az azonosságok értelemszerűen magasabb gyökkitevőkre is igazak a megfelelő értelmezési tartományokon, kiegészülve a $\\sqrt[m]{\\sqrt[n]{a}} = \\sqrt[m \\cdot n]{a}$ szabályával.</i>
+      </div>
+      <div class="block biz">
+        <div class="step-label">Tétel bizonyítása racionális kitevőkre: $a^n \\cdot a^m = a^{n+m}$</div>
+        Legyen $a > 0$ és a két kitevő $n = \\frac{p}{q}$, illetve $m = \\frac{r}{s}$, ahol $p, r \\in \\mathbb{Z}$ és $q, s \\in \\mathbb{Z}^+$. Hozzunk közös nevezőre a kitevőket: $n = \\frac{ps}{qs}$ és $m = \\frac{qr}{qs}$.<br>
+        A törtkitevő definícióját és a pozitív egészekre vonatkozó azonosságokat alkalmazva:<br>
+        $$a^n \\cdot a^m = a^{\\frac{ps}{qs}} \\cdot a^{\\frac{qr}{qs}} = \\sqrt[qs]{a^{ps}} \\cdot \\sqrt[qs]{a^{qr}} = \\sqrt[qs]{a^{ps} \\cdot a^{qr}}$$
+        Az azonos alapú pozitív egész hatványok szorzásának azonossága miatt $a^{ps} \\cdot a^{qr} = a^{ps + qr}$:<br>
+        $$= \\sqrt[qs]{a^{ps + qr}} = a^{\\frac{ps + qr}{qs}} = a^{\\frac{ps}{qs} + \\frac{qr}{qs}} = a^{n + m}$$
+        Ezzel az azonosságot törtkitevőkre is sikeresen bebizonyítottuk. $\\blacksquare$
+      </div>`
+  },
+  {
+    id: 5,
+    title: "Hatványfüggvények minőségi elemzése",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <b>Hatványfüggvénynek</b> nevezzük az $f(x) = x^n$ hozzárendelési szabállyal megadott függvényeket, ahol $n \\in \\mathbb{Z}^+$. A függvény tulajdonságai a kitevő paritásától függően három jól elkülöníthető csoportra oszthatók.
+      </div>
+      <div class="block thm">
+        <div class="step-label">A pozitív egész kitevőjű hatványfüggvények tulajdonságai</div>
+        <table style="width:100%; border-collapse: collapse; font-size: 12px; text-align: left; margin-top:5px;">
+          <tr style="border-bottom: 2px solid var(--border); font-weight:600; background-color: rgba(0,0,0,0.02);">
+            <td style="padding:5px;">Szempont</td>
+            <td style="padding:5px; color:var(--blue);">$n = 1$ (lineáris)</td>
+            <td style="padding:5px; color:var(--teal);">$n = 2k$ (páros kitevő)</td>
+            <td style="padding:5px; color:var(--purple);">$n = 2k+1, \\, k \\ge 1$ (páratlan)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Értelm. Tart. ($D_f$)</b></td><td>$\\mathbb{R}$</td><td>$\\mathbb{R}$</td><td>$\\mathbb{R}$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Értékkészlet ($R_f$)</b></td><td>$\\mathbb{R}$</td><td>$\\mathbb{R}_0^+$ (vagy $\\mathbb{R} \\setminus \\mathbb{R}^-$)</td><td>$\\mathbb{R}$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Zérushely</b></td><td>$x = 0$</td><td>$x = 0$</td><td>$x = 0$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Szélsőérték</b></td>
+            <td>Nincs</td>
+            <td>Minimum: $y=0$ ($x=0$-ban)<br>Maximum nincs.</td>
+            <td>Nincs</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Paritás</b></td><td>Páratlan (origo szimm.)</td><td>Páros ($y$-tengely szimm.)</td><td>Páratlan (origo szimm.)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Monotonitás</b></td>
+            <td>Szigorúan monoton növekvő</td>
+            <td>$(-\\infty; 0]$ szig. mon. csökkenő<br>$[0; +\\infty)$ szig. mon. növekvő</td>
+            <td>Szigorúan monoton növekvő</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>Görbület</b></td>
+            <td>Egyenes (nincs görbület)</td>
+            <td>Végig konvex</td>
+            <td>$(-\\infty; 0]$ konkáv<br>$[0; +\\infty)$ konvex</td>
+          </tr>
+        </table>
+      </div>`
+  },
+  {
+    id: 6,
+    title: "A négyzetgyökfüggvény tulajdonságai",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        A <b>négyzetgyökfüggvény</b> az $f(x) = x^2$ függvény $[0; +\\infty)$ intervallumra vett szűkítésének (mivel csak itt injektív, azaz kölcsönösen egyértelmű) az <b>inverz függvénye</b>. Grafikonja a normál parabola jobb szárnyának tükörképe az $y = x$ tengelyre.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Az $f(x) = \\sqrt{x}$ függvény minőségi elemzése</div>
+        • <b>Értelmezési tartomány ($D_f$):</b> $\\mathbb{R}_0^+$ (a nemnegatív valós számok halmaza).<br>
+        • <b>Értékkészlet ($R_f$):</b> $\\mathbb{R}_0^+$ (negatív értéket a definíció miatt nem vehet fel).<br>
+        • <b>Zérushely:</b> $x = 0$.<br>
+        • <b>Szélsőértékek:</b><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;– <i>Lokális és globális minimum:</i> $y = 0$, a minimumhely: $x = 0$.<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;– <i>Maximum:</i> Nincs, a függvény felülről nem korlátos.<br>
+        • <b>Paritás:</b> Sem nem páros, sem nem páratlan (mivel a negatív számokra nincs értelmezve).<br>
+        • <b>Periodikusság:</b> Nem periodikus.<br>
+        • <b>Monotonitás:</b> A teljes értelmezési tartományán szigorúan monoton növekvő.<br>
+        • <b>Görbület / Alak:</b> Az egész értelmezési tartományán alulról nézve <b>konkáv</b>.
+      </div>`
+  },
+  {
+    id: 7,
+    title: "Gyakorlati alkalmazások",
+    tags: ["app"],
+    content: `
+      <div class="step-label">Hol alkalmazzuk a hatványozást és gyökvonást?</div>
+      <div class="block app">
+        • <b>Geometria és fizika:</b> A mindennapi képletek alapvető építőelemei. Területszámításnál ($A=a^2$, négyzetes hatványfüggvény), térfogatszámításnál ($V=a^3$, köbös hatványfüggvény). A fizikai képletekben a szabadesés úttörvénye ($s = \\frac{g}{2}t^2$) szintén másodfokú hatványkapcsolat.<br>
+        • <b>Magasabb fokú egyenletek:</b> Az elsőfokúnál magasabb rendű algebrai egyenletek, egyenlőtlenségek megoldásának kizárólagos eszközei az azonosságok és a rendezési elvek.<br>
+        • <b>A számkörök kiterjesztése:</b> A negatív számokból való négyzetgyökvonás problémája ($\\sqrt{-1}$) hívta életre a matematika egyik legizgalmasabb fejezetét, a <b>komplex számok halmazát</b> ($\\mathbb{C}$), amely elengedhetetlen a modern elektrotechnikában és az áramlástanban.
+      </div>`
+  }
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>1. tétel: Halmazok, halmazműveletek. Nevezetes ponthalmazok</h1>
+    <p class="subtitle">Alapfogalmak, De Morgan azonosságok, síkbeli és térbeli mértani helyek</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Matematika emelt szóbeli felkészítő</footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  // IDE MÁSOLD BE AZ AI ÁLTAL GENERÁLT OBJEKTUMOKAT!
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>

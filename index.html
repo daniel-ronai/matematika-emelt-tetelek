@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Érettségi Tételek – Irányítópult</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple: #3C3489;
+    --purple-bg: #EEEDFE;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 20px;
+  }
+
+  header {
+    background: var(--surface);
+    padding: 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  }
+
+  header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  header p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* 25 tétel rácsszerkezete */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+  }
+
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+  }
+
+  /* Kijelölési effekt */
+  .tile:hover {
+    transform: translateY(-2px);
+    border-color: var(--purple);
+    box-shadow: 0 6px 16px rgba(60, 52, 137, 0.08);
+  }
+
+  .tile span.number {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--purple);
+  }
+
+  .tile span.label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr); /* Mobilon 2 oszlopos elrendezés */
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <header>
+    <h1>Matematika Érettségi Tételek</h1>
+    <p>Üdvözöllek az egyedi irányítópultodon! Innen gyorsan elérheted mind a 25 emelt/középszintű tételt. Útközben, mobilon is tökéletesen használható, letisztult felület a hatékony ismétléshez.</p>
+  </header>
+
+  <div class="grid" id="tetelGrid"></div>
+</div>
+
+<script>
+  const grid = document.getElementById('tetelGrid');
+  
+  // Automatikusan legenerálunk 25 csempét
+  for (let i = 1; i <= 25; i++) {
+    const link = document.createElement('a');
+    link.href = `${i}.html`; // dinamikusan a megfelelő html-re mutat (1.html, 2.html...)
+    link.className = 'tile';
+    link.innerHTML = `
+      <span class="number">${i}.</span>
+      <span class="label">tétel</span>
+    `;
+    grid.appendChild(link);
+  }
+</script>
+
+</body>
+</html>

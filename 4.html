@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>4. tétel: A matematikai logika elemei. Logikai műveletek</h1>
+    <p class="subtitle">Állítás és megfordítása, igazságtáblázatok, kvantorok, valamint a szükséges és elégséges feltételek a bizonyításokban</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Matematika emelt szóbeli felkészítő</footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  {
+    id: 0,
+    title: "A logika története és mérföldkövei",
+    tags: ["app"],
+    content: `
+      <div class="step-label">A felelet indítása és történelmi kontextus</div>
+      <div class="block app">
+        A <b>logika</b> nem csupán a matematika része, hanem az emberi gondolkodás legfontosabb törvényeit, a helyes következtetések szabályait fogalmazza meg.<br><br>
+        • <b>Ókor:</b> Alapjait Szókratész és a szofisták rakták le (szavak és mondatok jelentésének tisztázása), majd <b>Arisztotelész</b> dolgozta ki részletesen a máig használt formális szabályokat, melyeket később az <i>Organon</i> (Eszköz) című műben foglaltak össze. Ő vezette be a premissza-konklúzió struktúrát (pl. <i>Premisszák: Minden ember halandó. Szókratész ember. $\\implies$ Konklúzió: Szókratész halandó.</i>).<br>
+        • <b>Modern kor (19-20. század):</b> A matematikai logika újjászületése Gottlob Frege munkásságával indult, majd Bertrand Russell, Ludwig Wittgenstein, Alfred Tarski és Kurt Gödel formálták tovább.<br>
+        • <b>Axiomatikus határok:</b> Russell és Whitehead (<i>Principia Mathematica</i>) kísérletet tettek a matematika teljes logikai megalapozására. Ezt árnyalta <b>Kurt Gödel nemteljességi tétele</b>: minden ellentmondásmentes axiómarendszer, amely tartalmazza a természetes számok aritmetikáját, szükségképpen <i>nem teljes</i>, azaz léteznek benne eldönthetetlen (sem nem bizonyítható, sem nem cáfolható) igaz állítások.
+      </div>`
+  },
+  {
+    id: 1,
+    title: "A matematikai logika alapfogalmai és az állítás",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Alapdefiníciók: Ítéletkalkulus</div>
+        A matematikai logika legegyszerűbb ága az <b>ítéletkalkulus</b>. Alapfogalmai az ítélet, a logikai értékek és a logikai műveletek.<br><br>
+        • <b>Ítélet (állítás, kijelentés):</b> Minden olyan kijelentő mondat, amelyről egyértelműen és kizárólagosan eldönthető, hogy igaz (jele: $i$ vagy $1$) vagy hamis (jele: $h$ vagy $0$).<br>
+        • <b>Nem állítások:</b> A kérdő, felszólító, felkiáltó mondatok, illetve a szubjektív kijelentések (pl. "A matematika szép"), mivel ezekhez nem rendelhető egyértelmű logikai érték.<br>
+        • <b>Logikai művelet:</b> Ha az állításokat tagadószóval látjuk el vagy kötőszavakkal összekapcsoljuk, új állításokat kapunk. Ezek logikai értékét <b>igazságtáblázattal</b> definiáljuk.
+      </div>`
+  },
+  {
+    id: 2,
+    title: "Alapvető logikai műveletek és igazságtáblázataik",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Az 5 alapvető logikai művelet</div>
+        Az alábbi táblázat összefoglalja a matematikai logika alapműveleteit. 
+        A $A$ és $B$ tetszőleges állítások.
+        
+        <table style="width:100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; text-align: center;">
+          <tr style="border-bottom: 2px solid var(--border); font-weight:600; background-color: rgba(0,0,0,0.02);">
+            <td style="padding: 6px;">$A$</td>
+            <td style="padding: 6px;">$B$</td>
+            <td style="padding: 6px; color: var(--purple);">$\\neg A$<br><small>Negáció</small></td>
+            <td style="padding: 6px; color: var(--teal);">$A \\land B$<br><small>Konjunkció</small></td>
+            <td style="padding: 6px; color: var(--blue);">$A \\lor B$<br><small>Diszjunkció</small></td>
+            <td style="padding: 6px; color: var(--amber);">$A \\Rightarrow B$<br><small>Implikáció</small></td>
+            <td style="padding: 6px; color: #b91c1c;">$A \\Leftrightarrow B$<br><small>Ekvivalencia</small></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>i</b></td><td><b>i</b></td><td>h</td><td style="font-weight:600; background-color: var(--teal-bg);">i</td><td>i</td><td>i</td><td style="font-weight:600; background-color: #fee2e2;">i</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>i</b></td><td><b>h</b></td><td>h</td><td>h</td><td>i</td><td style="font-weight:600; background-color: var(--amber-bg);">h</td><td>h</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>h</b></td><td><b>i</b></td><td>i</td><td>h</td><td>i</td><td>i</td><td>h</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td><b>h</b></td><td><b>h</b></td><td>i</td><td>h</td><td style="font-weight:600; background-color: var(--blue-bg);">h</td><td>i</td><td style="font-weight:600; background-color: #fee2e2;">i</td>
+          </tr>
+        </table>
+        
+        <br>
+        • <b>1. Negáció ($\\neg A$ - tagadás, "nem A"):</b> Az állítás logikai értékét az ellenkezőjére változtatja. Nyilvánvalóan $\\neg(\\neg A) = A$.<br>
+        • <b>2. Konjunkció ($A \\land B$ - "A és B"):</b> <u>Csak akkor igaz</u>, ha mindkét részállítása igaz.<br>
+        • <b>3. Diszjunkció ($A \\lor B$ - megengedő "vagy"):</b> <u>Csak akkor hamis</u>, ha mindkét részállítása hamis. (A köznyelvi <i>kizáró vagy</i> – "vagy..., vagy..." – ezzel szemben akkor igaz, ha pontosan az egyik tag igaz).<br>
+        • <b>4. Implikáció ($A \\Rightarrow B$ - "ha A, akkor B"):</b> Következtetésművelet. <u>Csak akkor hamis</u>, ha az $A$ előtag igaz és a $B$ utótag hamis. Igaz állításból nem következhet hamis, de hamis premisszából bármi következhet.<br>
+        • <b>5. Ekvivalencia ($A \\Leftrightarrow B$ - "A akkor és csak akkor, ha B"):</b> Egyenértékűség. <u>Akkor igaz</u>, ha a két állítás logikai értéke megegyezik.
+      </div>`
+  },
+  {
+    id: 3,
+    title: "Kvantorok (Mennyiségjelölők)",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        A logikai nyitott mondatokból (pl. "... halandó.") nemcsak konkrét név behelyettesítésével kaphatunk zárt ítéletet, hanem úgy is, ha meghatározzuk az alanyok számosságát vagy mennyiségét (kvantifikáció).<br><br>
+        • <b>Univerzális kvantor ($\\forall$):</b> Jelentése: „minden”, „bármely”, „összes”, „valamennyi”.<br>
+        <i>Példa:</i> $\\forall x \\in \\mathbb{R} : x^2 \\ge 0$ (Minden valós szám négyzete nemnegatív).<br>
+        • <b>Egzisztenciális kvantor ($\\exists$):</b> Jelentése: „van olyan”, „létezik legalább egy”.<br>
+        <i>Példa:</i> $\\exists x \\in \\mathbb{Z} : x < 0$ (Létezik olyan egész szám, ami negatív).<br>
+        • <b>Egyértelmű egzisztenciális kvantor ($\\exists!$):</b> Jelentése: „pontosan egy létezik”.<br>
+        <i>Példa:</i> $\\exists! x \\in \\mathbb{R} : 2x + 1 = 5$ (Pontosan egy olyan valós szám van, ami kielégíti az egyenletet).
+      </div>`
+  },
+  {
+    id: 4,
+    title: "A helyes tagadás szabályai a gyakorlatban",
+    tags: ["thm", "app"],
+    content: `
+      <div class="block thm">
+        A matematikai precizitás megköveteli a mondatok helyes negációját, amely sokszor eltér a hétköznapi intuíciótól.<br><br>
+        • <b>Kvantoros állítások tagadása:</b> Az univerzális kvantor tagadása egzisztenciálissá válik, és a belső állítás is tagadásra kerül (és fordítva):<br>
+        $$\\neg (\\forall x : P(x)) \\iff \\exists x : \\neg P(x)$$
+        $$\\neg (\\exists x : P(x)) \\iff \\forall x : \\neg P(x)$$
+        • <b>Példa:</b> Legyen az állítás: <i>„Minden embernek két feje van.”</i><br>
+        – <b>Helyes tagadás:</b> „<u>Van olyan</u> ember, akinek <u>nincs</u> két feje.” (vagy: „Nem minden embernek van két feje.”).<br>
+        – <b>Klasszikus rossz tagadás:</b> „Minden embernek egy feje van.” vagy „Senkinek sincs két feje.” – ezek nem fedik le a logikai ellentétet!
+      </div>
+      <div class="block thm">
+        <div class="step-label">Műveletek redukálhatósága és a De Morgan-azonosságok</div>
+        Igazságtáblázatokkal könnyen belátható, hogy az összetett műveletek visszavezethetők az alapvető és/vagy/nem hármasra:<br>
+        1. $A \\Leftrightarrow B \\iff (A \\Rightarrow B) \\land (B \\Rightarrow A)$<br>
+        2. $A \\Rightarrow B \\iff \\neg A \\lor B$<br><br>
+        • <b>Logikai De Morgan-azonosságok:</b><br>
+        $$\\neg(A \\land B) \\iff \\neg A \\lor \\neg B \\quad \\text{(A konjunkció tagadása)}$$
+        $$\\neg(A \\lor B) \\iff \\neg A \\land \\neg B \\quad \\text{(A diszjunkció tagadása)}$$
+      </div>`
+  },
+  {
+    id: 5,
+    title: "Műveleti tulajdonságok és a Disztributivitás (Bizonyítás)",
+    tags: ["thm", "biz"],
+    content: `
+      <div class="block thm">
+        A logikai konjunkció ($\\land$) és diszjunkció ($\\lor$) műveletei <b>idempotensek</b> ($A \\land A \\iff A$), <b>kommutatívak</b> ($A \\land B \\iff B \\land A$), <b>asszociatívak</b> ($(A \\land B) \\land C \\iff A \\land (B \\land C)$) és egymásra nézve <b>disztributívak</b> (felbonthatóak).
+      </div>
+      <div class="block biz">
+        <div class="step-label">Tétel bizonyítása: $A \\lor (B \\land C) \\iff (A \\lor B) \\land (A \\lor C)$</div>
+        Igazoljuk az azonosságot ítéletkalkulus (igazságtáblázat) segítségével!
+        
+        <table style="width:100%; border-collapse: collapse; font-size: 12px; text-align: center;">
+          <tr style="border-bottom: 2px solid var(--border); font-weight:600; background-color: rgba(0,0,0,0.02);">
+            <td>$A$</td><td>$B$</td><td>$C$</td>
+            <td style="color:var(--purple); font-weight:600;">$B \\land C$</td>
+            <td style="background-color:var(--teal-bg); font-weight:600;">$A \\lor (B \\land C)$</td>
+            <td>$A \\lor B$</td><td>$A \\lor C$</td>
+            <td style="background-color:var(--teal-bg); font-weight:600;">$(A \\lor B) \\land (A \\lor C)$</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);"><td>i</td><td>i</td><td>i</td><td>i</td><td><b>i</b></td><td>i</td><td>i</td><td><b>i</b></td></tr>
+          <tr style="border-bottom: 1px solid var(--border);"><td>i</td><td>i</td><td>h</td><td>h</td><td><b>i</b></td><td>i</td><td>i</td><td><b>i</b></td></tr>
+          <tr style="border-bottom: 1px solid var(--border);"><td>i</td><td>h</td><td>i</td><td>h</td><td><b>i</b></td><td>i</td><td>i</td><td><b>i</b></td></tr>
+          <tr style="border-bottom: 1px solid var(--border);"><td>i</td><td>h</td><td>h</td><td>h</td><td><b>i</b></td><td>i</td><td>i</td><td><b>i</b></td></tr>
+          <tr style="border-bottom: 1px solid var(--border);"><td>h</td><td>i</td><td>i</td><td>i</td><td><b>i</b></td><td>i</td><td>i</td><td><b>i</b></td></tr>
+          <tr style="border-bottom: 1px solid var(--border);"><td>h</td><td>i</td><td>h</td><td>h</td><td><b>h</b></td><td>i</td><td>h</td><td><b>h</b></td></tr>
+          <tr style="border-bottom: 1px solid var(--border);"><td>h</td><td>h</td><td>i</td><td>h</td><td><b>h</b></td><td>h</td><td>i</td><td><b>h</b></td></tr>
+          <tr style="border-bottom: 1px solid var(--border);"><td>h</td><td>h</td><td>h</td><td>h</td><td><b>h</b></td><td>h</td><td>h</td><td><b>h</b></td></tr>
+        </table>
+        <br>
+        <b>Konklúzió:</b> Mivel a két kiemelt oszlop logikai értékei minden lehetséges esetben (mind a 8 variációra) tökéletesen megegyeznek, a disztributivitás azonossága szigorúan igazolva van. $\\blacksquare$
+      </div>`
+  },
+  {
+    id: 6,
+    title: "Állítás és megfordítása. Szükséges és elégséges feltételek",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        A matematikai tételek többsége logikailag egy $A \\Rightarrow B$ implikáció (<i>„ha A, akkor B”</i>), ahol $A$ a <b>tétel feltétele</b>, $B$ pedig a <b>tétel állítása</b>.<br>
+        Az állítás <b>megfordításán</b> a $B \\Rightarrow A$ implikációt értjük (<i>„ha B, akkor A”</i>).<br>
+        <span style="color:var(--amber)"><b>Fontos vizsgáztatói megjegyzés:</b> Ha egy $A \\Rightarrow B$ állítás igaz, abból <u>általában nem következik</u>, hogy a megfordított $B \\Rightarrow A$ állítás is igaz!</span>
+      </div>
+      <div class="block thm">
+        <div class="step-label">Szükséges és elégséges feltételek</div>
+        Ha az $A \\Rightarrow B$ implikáció igaz, akkor:<br>
+        • $A$ az <b>elégséges feltétele</b> $B$-nek (ha $A$ teljesül, az már magában elegendő ahhoz, hogy $B$ is igaz legyen).<br>
+        • $B$ a <b>szükséges feltétele</b> $A$-nak (szükségszerű, hogy $B$ igaz legyen, különben $A$ sem teljesülhetne).<br><br>
+        • <b>Példa az egyirányú igazságra:</b> <i>„Ha egy négyszög paralelogramma, akkor a négyszög trapéz.”</i> (Igaz állítás).<br>
+        – A paralelogrammaság <b>elégséges feltétel</b> a trapézsághoz (de nem szükséges, mert egy sima húrtrapéz is trapéz).<br>
+        – A trapézság <b>szükséges feltétel</b> a paralelogrammasághoz (de nem elégséges).<br>
+        – Az állítás megfordítása: <i>„Ha egy négyszög trapéz, akkor az paralelogramma.”</i> $\\implies$ Ez nyilvánvalóan <b>hamis</b>.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Szükséges és elégséges feltétel egyszerre</div>
+        Ha az $A \\Leftrightarrow B$ ekvivalencia igaz (<i>„A akkor és csak akkor, ha B”</i>), akkor $A$ <b>szükséges és elégséges feltétele</b> $B$-nek (és fordítva). Ekkor a tétel és annak megfordítása is egyszerre igaz.<br>
+        • <b>Példa:</b> <i>„Egy egész szám akkor és csak akkor osztható 12-vel, ha osztható 3-mal és 4-gyel.”</i> (A 3-mal és 4-gyel való oszthatóság szükséges és elégséges feltétele a 12-vel való oszthatóságnak).
+      </div>`
+  },
+  {
+    id: 7,
+    title: "A logika szerepe a bizonyítási módszerekben",
+    tags: ["thm", "biz"],
+    content: `
+      <div class="block thm">
+        A matematikai gondolkodás és a tételek levezetése két alapvető logikai következtetési láncra épül:
+      </div>
+      <div class="block biz">
+        <div class="step-label">1. Direkt bizonyítás</div>
+        A direkt bizonyítás során az implikáció <b>tranzitív tulajdonságát</b> használjuk ki:<br>
+        $$[(A \\Rightarrow B) \\land (B \\Rightarrow C)] \\Rightarrow (A \\Rightarrow C)$$
+        Ismert, igaz állításokból (axiómákból vagy korábban igazolt tételekből) kiindulva, logikailag zárt lépések sorozatával eljutunk a bizonyítandó állításig.
+      </div>
+      <div class="block biz">
+        <div class="step-label">2. Indirekt bizonyítás (Reductio ad absurdum)</div>
+        Az indirekt bizonyítás mögött az a logikai azonosság áll, hogy egy implikáció logikailag ekvivalens a <b>kontrapozíciójával</b> (azaz ha az állítás igaz, akkor a tagadások megfordított következménye is igaz):<br>
+        $$(A \\Rightarrow B) \\iff (\\neg B \\Rightarrow \\neg A)$$
+        <b>A szóbeli felelet levezetési menete:</b><br>
+        1. Feltesszük az eredeti állítás ellenkezőjét (hogy a $B$ konklúzió <i>nem igaz</i>: $\\neg B$).<br>
+        2. Ebből kiindulva logikailag helyes lépésekkel eljutunk egy olyan állításig ($\\neg A$), amely nyilvánvalóan <b>ellentmondásban áll</b> az $A$ feltételünkkel, egy axiómával vagy egy korábbi tétellel.<br>
+        3. Mivel a gondolatmenetünkben nem követtünk el hibát, az ellentmondást csak a hibás (indirekt) feltevésünk okozhatta. Következésképpen az eredeti állításnak igaznak kell lennie.
+      </div>`
+  }
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>

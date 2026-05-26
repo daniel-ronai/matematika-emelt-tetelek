@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>3. tétel: Oszthatóság, oszthatósági szabályok és tételek. Prímszámok. Számrendszerek</h1>
+    <p class="subtitle">A számelmélet alaptétele, Eukleidészi algoritmus, nevezetes oszthatósági szabályok és a helyiértékes rendszerek</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Matematika emelt szóbeli felkészítő</footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  {
+    id: 0,
+    title: "Bevezetés és alapfogalmak",
+    tags: ["app", "def"],
+    content: `
+      <div class="step-label">A felelet indítása és alapgondolatok</div>
+      <div class="block app">
+        A <b>számelmélet</b> elsősorban a pozitív egész számok tulajdonságait kutatja. Bár az egész számokra fókuszál, számos tétele a valós vagy komplex számok segítségével bizonyítható a legkönnyebben. Fordítva is igaz: a természetes számok tulajdonságait kiválóan használhatjuk a valós számok vizsgálatára (például a $\\sqrt{2}$ irracionális voltának bizonyításakor).<br>
+        <i>A továbbiakban a betűk – ha külön nem jelöljük – egész számokat jelentenek.</i>
+      </div>
+      <div class="block def">
+        <div class="step-label">Oszthatóság definíciója</div>
+        Azt mondjuk, hogy a $b$ szám osztható a nem nulla $a$ számmal, ha létezik olyan $c$ egész szám, amelyre:<br>
+        $$b = c \\cdot a$$
+        <b>Jelölések:</b> $a \\mid b$ (olvasható: $a$ osztója $b$-nek), illetve $a \\nmid b$ (nem osztója).
+      </div>`
+  },
+  {
+    id: 1,
+    title: "Az oszthatóság alaptételei és a maradékos osztás",
+    tags: ["thm"],
+    content: `
+      <div class="block thm">
+        <div class="step-label">Oszthatósági tételek</div>
+        1. Ha $a \\mid b$, akkor tetszőleges $c$-re $a \\mid b \\cdot c$.<br>
+        2. <b>Tranzitivitás:</b> Ha $a \\mid b$ és $b \\mid c$, akkor $a \\mid c$.<br>
+        3. <b>Linearitás:</b> Ha $a \\mid b$ és $a \\mid c$, akkor tetszőleges $d, e$ egészekre $a \\mid (d \\cdot b + e \\cdot c)$.<br>
+        4. Ha $a \\mid b$ és $b \\mid a$, akkor $a = \\pm b$.<br>
+        5. Ha $a \\mid b$ és $a > 0, b > 0$, akkor $a \\le b$.<br>
+        6. Ha $m \\neq 0$, akkor $a \\mid b \\iff m \\cdot a \\mid m \\cdot b$.
+      </div>
+      <div class="block thm">
+        <div class="step-label">A maradékos osztás tétele (Osztási algoritmus)</div>
+        Tetszőleges $a > 0$ és tetszőleges $b$ számokhoz létezik egyértelműen meghatározott $q$ és $m$ egész szám, amelyekre:<br>
+        $$b = q \\cdot a + m, \\quad \\text{ahol } 0 \\le m < a$$
+        A $q$-t <b>hányadosnak</b>, az $m$-et <b>maradéknak</b> nevezzük. Ha $a \\nmid b$, akkor a maradékra a szigorúbb $0 < m < a$ feltétel teljesül.<br>
+        <span style="color:var(--amber)"><b>Fontos vizsgáztatói megjegyzés:</b> A felírás sorrendjére figyelni kell! A $13 = 3 \\cdot 4 + 1$ (ahol $a=3, q=4, m=1$) és a $13 = 4 \\cdot 3 + 1$ (ahol $a=4, q=3, m=1$) matematikailag nem ugyanazt a maradékos osztást reprezentálja, hiszen a maradéknak szigorúan kisebbnek kell lennie az osztónál ($m < a$).</span>
+      </div>`
+  },
+  {
+    id: 2,
+    title: "Közös osztó, többszörös és kapcsolatuk",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        • <b>Közös osztó:</b> Az $a$ szám közös osztója $b$-nek és $c$-nek, ha $a \\mid b$ és $a \\mid c$.<br>
+        • <b>Legnagyobb közös osztó (lnko):</b> Ha $b$ és $c$ egyike sem nulla, akkor a közös osztóik száma véges, így létezik köztük egy legnagyobb, melynek jele: $(b; c)$. Pozitív számok esetén nyilvánvalóan $(b; c) \\ge 1$.<br>
+        • <b>Relatív prímek:</b> Ha $(b; c) = 1$, akkor a $b$ és $c$ számokat relatív prímeknek nevezzük.<br>
+        • <b>Közös többszörös:</b> Ha $a \\mid b$ és $c \\mid b$, akkor a $b$ számot az $a$ és $c$ közös többszörösének nevezzük.<br>
+        • <b>Legkisebb közös többszörös (lkkt):</b> A pozitív közös többszörösök közül a legkisebb, jele: $[a; c]$.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Két szám lnko és lkkt kapcsolata</div>
+        <b>Tétel:</b> Bármely pozitív $a$ és $b$ számok esetén fennáll az alábbi összefüggés:<br>
+        $$(a; b) \\cdot [a; b] = a \\cdot b$$
+        <i>Figyelem! Ez a tétel <u>kizárólag két számra</u> érvényes! Gyakran használjuk nagy számok esetén az $[a; b]$ kiszámítására, miután az $(a;b)$-t a gyorsabb eukleidészi algoritmussal már meghatároztuk.</i>
+      </div>`
+  },
+  {
+    id: 3,
+    title: "Oszthatósági szabályok a tízes számrendszerben",
+    tags: ["thm"],
+    content: `
+      <div class="block thm">
+        Egy tetszőleges egész szám a tízes számrendszerben felírva:<br>
+        1. <b>2-vel</b> osztható $\\iff$ ha az utolsó számjegye osztható 2-vel (páros).<br>
+        2. <b>3-mal</b> osztható $\\iff$ ha a számjegyeinek összege osztható 3-mal.<br>
+        3. <b>4-gyel</b> osztható $\\iff$ ha az utolsó két számjegyéből álló szám osztható 4-gyel.<br>
+        4. <b>5-tel</b> osztható $\\iff$ ha az utolsó számjegye $0$ vagy $5$.<br>
+        5. <b>6-tal</b> osztható $\\iff$ ha egyszerre osztható 2-vel és 3-mal.<br>
+        6. <b>7-tel</b> osztható $\\iff$ ha a számjegyeit hátulról hármasával csoportosítva és váltakozó előjellel összeadva a kapott szám osztható 7-tel.<br>
+        7. <b>8-cal</b> osztható $\\iff$ ha az utolsó három számjegyéből álló szám osztható 8-cal.<br>
+        8. <b>9-cel</b> osztható $\\iff$ ha a számjegyeinek összege osztható 9-cel.<br>
+        9. <b>10-zel</b> osztható $\\iff$ ha az utolsó számjegye $0$.<br>
+        10. <b>11-gyel</b> osztható $\\iff$ ha a számjegyeit váltakozó előjellel összeadva a kapott összeg osztható 11-gyel.
+      </div>`
+  },
+  {
+    id: 4,
+    title: "Prímszámok és a számelmélet alaptétele",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        • <b>Prímszám (törzsszám):</b> Olyan $p > 1$ egész szám, amelynek az $1$-en és önmagán kívül nincs más pozitív osztója.<br>
+        • <b>Összetett szám:</b> Olyan $n > 1$ egész szám, amely nem prímszám.<br>
+        <i>Megjegyzés: A $0$ és az $1$ se nem prím, se nem összetett szám.</i>
+      </div>
+      <div class="block thm">
+        <div class="step-label">A Számelmélet Alaptétele</div>
+        <b>Tétel:</b> Minden $n > 1$ egész szám felírható prímek szorzataként, és ez a felbontás a tényezők sorrendjétől eltekintve <b>egyértelmű</b>.<br><br>
+        A tétel alapján minden $n > 1$ egész szám felírható az úgynevezett <b>kanonikus alakban</b>:<br>
+        $$n = p_1^{\\alpha_1} \\cdot p_2^{\\alpha_2} \\cdot p_3^{\\alpha_3} \\cdot \\dots \\cdot p_k^{\\alpha_k}$$
+        ahol $p_1 < p_2 < \\dots < p_k$ növekvő prímszámok, és $\\alpha_i \\ge 1$ pozitív egész kitevők.
+      </div>`
+  },
+  {
+    id: 5,
+    title: "Prímszámos tételek és a pozitív osztók száma (Bizonyítások)",
+    tags: ["thm", "biz"],
+    content: `
+      <div class="block thm">
+        <b>1. Tétel (Eukleidész):</b> A prímszámok száma végtelen.<br>
+        <b>2. Tétel:</b> A prímek sorozatában tetszőlegesen nagy hézag van, azaz tetszőleges $k$ pozitív egészhez létezik $k$ darab egymás utáni összetett szám.<br>
+        <b>3. Tétel:</b> Egy $n = p_1^{\\alpha_1} \\cdot p_2^{\\alpha_2} \\dots p_k^{\\alpha_k}$ kanonikus alakú szám pozitív osztóinak száma:<br>
+        $$d(n) = (\\alpha_1 + 1) \\cdot (\\alpha_2 + 1) \\cdot (\\alpha_3 + 1) \\dots (\\alpha_k + 1)$$
+      </div>
+      <div class="block biz">
+        <div class="step-label">1. Bizonyítás választása: Eukleidész tétele (Indirekt)</div>
+        Tegyük fel indirekt módon, hogy csak véges sok prím létezik: $p_1, p_2, \\dots, p_k$.<br>
+        Tekintsük az alábbi számot: $n = (p_1 \\cdot p_2 \\cdot p_3 \\dots p_k) + 1$.<br>
+        A maradékos osztás tétele alapján ha ezt az $n$ számot elosztjuk bármelyik létező $p_i$ prímmel, a maradék mindig $1$ lesz, tehát $n$ egyik prímnek sem többszöröse. Ez azt jelenti, hogy az $n$ szám vagy maga is egy új, a listán nem szereplő prímszám, vagy van egy olyan prím osztója, amely nem szerepel az eddigi véges listánkon. Mindkét eset ellentmondás, így a prímek száma végtelen. $\\blacksquare$
+      </div>
+      <div class="block biz">
+        <div class="step-label">2. Bizonyítás választása: Pozitív osztók száma d(n)</div>
+        Legyen $r$ az $n$ egy tetszőleges pozitív osztója. Ekkor létezik olyan $q$, hogy $n = q \\cdot r$. A számelmélet alaptétele miatt az $r$ osztó kanonikus felbontásában kizárólag olyan prímek szerepelhetnek, amelyek $n$-ben is megvannak, és a hatványkitevőik sem haladhatják meg az $n$-ben szereplő kitevőket. Tehát az osztó alakja:<br>
+        $$r = p_1^{\\beta_1} \\cdot p_2^{\\beta_2} \\dots p_k^{\\beta_k}, \\quad \\text{ahol } 0 \\le \\beta_i \\le \\alpha_i$$
+        Mivel minden egyes $p_i$ prímhez a $\\beta_i$ kitevőt a $0, 1, 2, \\dots, \\alpha_i$ értékek közül egymástól teljesen függetlenül választhatjuk ki, így az $i$-edik prímhez pontosan $(\\alpha_i + 1)$ választási lehetőségünk van. A kombinatorika szorzási szabálya alapján az összes független választási lehetőség száma adja meg a pozitív osztók számát: $d(n) = (\\alpha_1 + 1)(\\alpha_2 + 1)\\dots(\\alpha_k + 1)$. $\\blacksquare$
+      </div>
+      <div class="block thm">
+        <div style="font-size:12.5px; color:var(--muted);">
+          <i>Kiegészítő érdekesség (Prímszámtétel): $\\pi(n)$ jelöli az $n$-nél kisebb prímek számát. $\\lim_{n \\to \\infty} \\frac{\\pi(n)}{n / \\ln n} = 1$, vagyis a prímek sűrűsége nagy számoknál fordítottan arányos az $\\ln n$-nel.</i>
+        </div>
+      </div>`
+  },
+  {
+    id: 6,
+    title: "Eukleidészi algoritmus (LNKO és LKKT prímek nélkül)",
+    tags: ["thm", "biz"],
+    content: `
+      <div class="block thm">
+        Kis számoknál az $(a;b)$ és $[a;b]$ kiszámítása egyszerű a kanonikus alakokból (lnko: közös prímek a legkisebb kitevőn; lkkt: összes előforduló prím a legnagyobb kitevőn). Nagy számoknál azonban a prímfelbontás (akasztófamódszer) rendkívül lassú. Ekkor használjuk az <b>Eukleidészi algoritmust</b> (maradékos osztások láncolata).
+      </div>
+      <div class="block biz">
+        <div class="step-label">Példa: $[2\\,634\\,420; 219\\,618]$ kiszámítása</div>
+        Végezzünk maradékos osztásokat addig, amíg a maradék $0$ nem lesz:<br>
+        1. $2\\,634\\,420 = 11 \\cdot 219\\,618 + 218\\,622$<br>
+        2. $219\\,618 = 1 \\cdot 218\\,622 + 996$<br>
+        3. $218\\,622 = 219 \\cdot 996 + 498$<br>
+        4. $996 = 2 \\cdot 498 + 0$<br><br>
+        A két szám legnagyobb közös osztója az <b>utolsó nem nulla maradék</b>, azaz:<br>
+        $$(2\\,634\\,420; 219\\,618) = 498$$
+        Ebből a korábbi tételünk alapján felírható a legkisebb közös többszörös:<br>
+        $$[2\\,634\\,420; 219\\,618] = \\frac{2\\,634\\,420 \\cdot 219\\,618}{498} = 1\\,161\\,779\\,220$$
+        <i>Előny: Ez a módszer ciklusok használatával rendkívül könnyen programozható számítógéppel!</i>
+      </div>`
+  },
+  {
+    id: 7,
+    title: "Számrendszerek és átváltások",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Helyiértékes rendszerek felépítése</div>
+        Egy tetszőleges $n$-es alapú számrendszerben a használt számjegyek halmaza: $\\{0, 1, 2, \\dots, n-1\\}$. Jobbról balra haladva a helyi értékek az $n$ hatványai ($n^0=1, n^1, n^2, n^3, \\dots$). Alapvető a $0$ használata, ami lehetővé teszi egy teljes nagyságrend kihagyását. Egy szám leírt alakja:<br>
+        $$(\\overline{abcde})_n = a \\cdot n^4 + b \\cdot n^3 + c \\cdot n^2 + d \\cdot n^1 + e \\cdot n^0$$
+      </div>
+      <div class="block thm">
+        <div class="step-label">Átváltások menete</div>
+        • <b>Tízesből $n$-esbe:</b> A számot szisztematikusan, maradékosan osztjuk $n$-nel, a kapott maradékokat lentről felfelé olvasva kapjuk meg az $n$-es alapú számot.<br>
+        <i>Példa: A római $MMXXII$ ($2022$) átírása nyolcas (oktális) számrendszerbe:</i><br>
+        $2022 = 252 \\cdot 8 + \\mathbf{6}$<br>
+        $252 = 31 \\cdot 8 + \\mathbf{4}$<br>
+        $31 = 3 \\cdot 8 + \\mathbf{7}$<br>
+        $3 = 0 \\cdot 8 + \\mathbf{3} \\implies (3746)_8$<br>
+        • <b>Kettes, nyolcas és tizenhatos közötti gyorsváltás:</b> Mivel $8=2^3$ és $16=2^4$, a kettes számrendszerbeli alakot hátulról hármasával (nyolcasnál) vagy négyesével (tizenhatosnál) csoportosítva közvetlenül átírhatjuk a számjegyekre, és fordítva.<br>
+        • <b>Tizenhatos (hexadecimális) számjegyek:</b> $9$ felett betűket használunk: $A=10, B=11, C=12, D=13, E=14, F=15$.<br>
+        $$2022 = (3746)_8 = (11111100110)_2 = (7E6)_{16} = \\$7E6$$
+      </div>`
+  },
+  {
+    id: 8,
+    title: "Gyakorlati alkalmazások",
+    tags: ["app"],
+    content: `
+      <div class="step-label">Hol találkozunk ezzel a való életben?</div>
+      <div class="block app">
+        • <b>Kriptográfia és Adatvédelem:</b> A prímszámok (különösen a hatalmas Mersenne-prímek) képezik a modern digitális biztonság alapját. A WiFi hálózatok titkosítása (WPA2-PSK/AES) és a banki tranzakciók, elektronikus aláírások mögött álló <b>RSA-eljárás</b> mind az óriási számok prímfelbontásának nehézségére (időigényességére) épülnek.<br>
+        • <b>Diofantoszi egyenletek:</b> Az olyan egyenleteket, ahol csak egész megoldásokat keresünk, szinte mindig oszthatósági vizsgálatokkal és maradékcsoportokkal oldjuk meg.<br>
+        • <b>Informatika / Hardver:</b> A hexadecimális számrendszer mindennapos az informatikában. Minden hálózati eszköz (mobil, PC) rendelkezik egy teljesen egyedi fizikai címmel, az úgynevezett <b>MAC-címmel</b> (pl. egy router alapú WiFi szűrésnél), amely 12 darab, kötőjelekkel elválasztott tizenhatos számrendszerbeli számjegyből áll.
+      </div>`
+  }
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>

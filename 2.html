@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>2. tétel: Racionális és irracionális számok. Műveletek. Törtek. Halmazok számossága</h1>
+    <p class="subtitle">Számhalmazok bővítése, tizedes tört alakok, alapműveletek tulajdonságai és a Cantor-féle átlós módszer</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Matematika emelt szóbeli felkészítő</footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  {
+    id: 0,
+    title: "Bevezetés és számhalmazok felépítése",
+    tags: ["app", "def"],
+    content: `
+      <div class="step-label">A felelet indítása és kontextusa</div>
+      <div class="block app">
+        A felelet során a <b>valós számok halmazával</b> ($\\mathbb{R}$) és annak részhalmazaival foglalkozom, követve a középiskolai történeti-permanenciaelvű felépítést, de törekedve az egzaktságra.<br><br>
+        • <b>A számegyenes definíciója:</b> Olyan egyenes, amelyen kijelölünk két pontot, az egyikhez a $0$, a másikhoz az $1$ valós számot rendeljük. A két pont távolságát <b>egységnek</b> nevezzük.<br>
+        • <b>Kölcsönösen egyértelmű megfeleltetés:</b> A számegyenes minden pontjához tartozik egy valós szám, és fordítva, minden valós számhoz tartozik pontosan egy pont a számegyenesen.
+      </div>
+      <div class="block def">
+        <div class="step-label">Történeti bővítés és a permanenciaelv</div>
+        • <b>Természetes számok ($\\mathbb{N}$):</b> $\\{0, 1, 2, 3, ...\\}$. Számlálási problémákra alakult ki. Az összeadás és szorzás kommutatív, asszociatív, a szorzás disztributív az összeadásra nézve. A halmaz e két műveletre nézve <b>zárt</b>.<br>
+        • <b>Egész számok ($\\mathbb{Z}$):</b> Mivel az összeadás inverze (a kivonás) nem mindig végezhető el $\\mathbb{N}$-ben, a <i>permanenciaelv</i> (a korábbi műveleti tulajdonságok megőrzése) alapján bevezetjük a $0$-t és a negatív egészeket.<br>
+        • <b>Racionális számok ($\\mathbb{Q}$):</b> A szorzás inverze (a $0$-tól különböző egésszel való osztás) tette szükségessé a törtszámok bevezetését.
+      </div>`
+  },
+  {
+    id: 1,
+    title: "Racionális, irracionális és transzcendens számok",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Algebrai alapdefiníciók</div>
+        • <b>Racionális számok ($\\mathbb{Q}$):</b> Azon számok halmaza, amelyek felírhatók két egész szám hányadosaként:<br>
+        $$\\mathbb{Q} = \\left\\{ \\frac{a}{b} : a \\in \\mathbb{Z}, b \\in \\mathbb{Z} \\setminus \\{0\\} \\right\\}$$
+        • <b>Irracionális számok ($\\mathbb{Q}^*$):</b> Azon számok, amelyek nem írhatók fel két egész szám hányadosaként.<br>
+        • <b>Kapcsolatuk:</b> A két halmaz diszjunkt, uniójuk a valós számok halmaza:<br>
+        $$\\mathbb{Q} \\cap \\mathbb{Q}^* = \\emptyset \\quad \\text{és} \\quad \\mathbb{Q} \\cup \\mathbb{Q}^* = \\mathbb{R}$$
+      </div>
+      <div class="block def">
+        <div class="step-label">Az irracionális számok felosztása</div>
+        • <b>Algebrai számok:</b> Azok az irracionális számok, amelyek gyökei valamilyen racionális együtthatójú polinomegyenletnek (pl. $\\sqrt{2}$, $\\sqrt[3]{5}$).<br>
+        • <b>Transzcendens számok:</b> Amelyek nem gyökei egyetlen racionális együtthatójú polinomegyenletnek sem (pl. $\\pi$ vagy az $e$ Euler-féle szám).
+      </div>`
+  },
+  {
+    id: 2,
+    title: "Tizedes tört alakok és konverzió (Tételek)",
+    tags: ["thm", "def"],
+    content: `
+      <div class="block thm">
+        <div class="step-label">Ekvivalens definíciók tizedes törtekkel</div>
+        <b>Tétel:</b> Minden valós számnak létezik egyértelműen meghatározott tizedes tört alakja.<br><br>
+        • <b>Racionális számok tizedes tört alakja:</b> Véges vagy végtelen, szakaszos tizedes tört.<br>
+        • <b>Irracionális számok tizedes tört alakja:</b> Végtelen, nem szakaszos tizedes tört.
+      </div>
+      <div class="block thm">
+        <div class="step-label">A véges tizedes tört létezésének feltétele</div>
+        <b>Tétel:</b> Egy racionális szám tizedes tört alakja <u>akkor és csak akkor véges</u>, ha a tovább nem egyszerűsíthető $\\frac{a}{b}$ alakjában a $b$ nevező prímtényezős felbontásában kizárólag a $2$ és/vagy az $5$ prímszámok szerepelnek.<br>
+        <i>Megjegyzés: Ez az állítás analóg módon igaz más alapú számrendszerekben is a rendszer alapszámának prímtényezőivel.</i>
+      </div>`
+  },
+  {
+    id: 3,
+    title: "Műveleti tulajdonságok a számhalmazokban",
+    tags: ["thm"],
+    content: `
+      <div class="block thm">
+        Mindkét halmazban ($\\mathbb{Q}$ és $\\mathbb{Q}^*$) az összeadás és a szorzás kommutatív és asszociatív, valamint a szorzás disztributív az összeadásra nézve. A strukturális viselkedésük azonban gyökeresen eltér:
+      </div>
+      <div class="block thm">
+        <div class="step-label">A racionális számok halmazának ($\\mathbb{Q}$) tulajdonságai</div>
+        1. Sem alulról, sem felülről <b>nem korlátos</b>.<br>
+        2. <b>Zárt a négy alapműveletre:</b> két racionális szám összege, különbsége, szorzata és hányadosa (ha a nevező nem $0$) mindig racionális szám.<br>
+        3. <b>Sűrű:</b> Bármely két racionális szám között van (és ebből következően végtelen sok) további racionális szám.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Az irracionális számok halmazának ($\\mathbb{Q}^*$) tulajdonságai</div>
+        1. Sem alulról, sem felülről <b>nem korlátos</b>.<br>
+        2. <b>NEM zárt a négy alapműveletre:</b> Két irracionális számmal végzett művelet eredménye lehet racionális is! (Pl. $\\sqrt{2} \\cdot \\sqrt{2} = 2 \\in \\mathbb{Q}$, vagy $\\sqrt{2} + (-\\sqrt{2}) = 0 \\in \\mathbb{Q}$).<br>
+        3. <b>Sűrű:</b> Bármely két irracionális szám között végtelen sok irracionális szám van.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Vegyes műveletek ($\\mathbb{Q}$ és $\\mathbb{Q}^*$ között)</div>
+        • Bármely két racionális szám között van irracionális szám, és fordítva.<br>
+        • Egy racionális és egy irracionális számmal elvégzett alapművelet eredménye <b>mindig irracionális szám</b> (kivéve a $0$-val való szorzást vagy a $0$ osztását).
+      </div>`
+  },
+  {
+    id: 4,
+    title: "A közönséges és vegyes törtek problémája",
+    tags: ["def", "app"],
+    content: `
+      <div class="block def">
+        A valós számok felírására a gyakorlatban közönséges törtet, vegyes törtet és tizedes törtet használunk. Például a $\\pi$ egy híres Archimédesz-féle közelítése a $\\frac{22}{7} = 3,\\dot{1}4285\\dot{7}$, ahol a szakasz elejét és végét pont jelzi a számjegyek felett. A szakasz hossza legfeljebb a nevezőnél eggyel kisebb ($b-1$) lehet.
+      </div>
+      <div class="block app">
+        <div class="step-label">Gyakorlati tanács a szóbeli felelethez</div>
+        A <b>vegyes törtek</b> használatát érdemes elkerülni, mert ha nincs kitéve a szorzásjel, félreérthető. Csak a szövegkörnyezet döntheti el a jelentést:<br>
+        1. Vegyes törtként: $3\\frac{1}{7} = 3 + \\frac{1}{7} = \\frac{22}{7}$ (pl. egyenletben együtthatóként).<br>
+        2. Szorzásként: $3 \\cdot \\frac{1}{7} = \\frac{3}{7}$ (pl. algebrai levezetések során).
+      </div>`
+  },
+  {
+    id: 5,
+    title: "Halmazok számossága és ekvivalenciája",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Véges és végtelen halmazok</div>
+        • <b>Véges halmaz számossága ($|A|$):</b> A halmazt alkotó elemek darabszáma (egy természetes szám, $|\\emptyset| = 0$).<br>
+        • <b>Ekvivalens (egyenlő számosságú) halmazok ($A \\sim B$):</b> Ha létezik közöttük egy $f: A \\to B$ <b>bijektív függvény</b> (kölcsönösen egyértelmű és ráképezés).<br>
+        • <b>A végtelen halmaz definíciója:</b> Az $A$ halmaz végtelen, ha létezik olyan $B \\subset A$ valódi részhalmaza, amellyel egyenlő számosságú ($A \\sim B$).
+      </div>
+      <div class="block thm">
+        <div class="step-label">Az ekvivalencia tulajdonságai</div>
+        Tetszőleges $A, B, C$ halmazokra:<br>
+        1. $A \\sim A$ (reflexív)<br>
+        2. Ha $A \\sim B$, akkor $B \\sim A$ (szimmetrikus)<br>
+        3. Ha $A \\sim B$ és $B \\sim C$, akkor $A \\sim C$ (tranzitív)<br>
+        <i>Megjegyzés: Az ekvivalencia halmazelméletileg formálisan nem reláció, mert ahhoz léteznie kellene a "halmazok halmazának", ami paradoxonhoz vezetne.</i>
+      </div>`
+  },
+  {
+    id: 6,
+    title: "Megszámlálhatóan végtelen halmazok és a Cantor-bizonyítás",
+    tags: ["def", "thm", "biz"],
+    content: `
+      <div class="block def">
+        <b>Megszámlálhatóan végtelen számosság ($\\aleph_0$ - alef-null):</b> A pozitív egész számok ($\\mathbb{Z}^+$) halmazának számossága. A véges és a megszámlálhatóan végtelen halmazokat együtt <b>megszámlálható halmazoknak</b> nevezzük.
+      </div>
+      <div class="block thm">
+        <b>Tétel:</b> $|\\mathbb{Z}^+| = |\\mathbb{N}| = |\\mathbb{Z}| = |\\mathbb{Q}^+| = |\\mathbb{Q}| = \\aleph_0$
+      </div>
+      <div class="block biz">
+        <div class="step-label">Bizonyítás: $|\\mathbb{Z}^+| = |\\mathbb{Q}^+|$ (Cantor-féle átlós módszer)</div>
+        
+        1. Írjuk fel egy kétdimenziós táblázatba a pozitív racionális számokat! Az $i$-edik sorba és $j$-edik oszlopba kerüljön a $\\frac{j}{i}$ tört (az első sorba az $1$ nevezőjűek, a másodikba a $2$ nevezőjűek stb.).<br>
+        2. Ezzel a mátrixszal az összes pozitív racionális számot felírtuk, ráadásul a bővítések miatt minden szám végtelen sokszor szerepel (pl. $\\frac{1}{1}, \\frac{2}{2}, \\frac{3}{3}$).<br>
+        3. <b>A bejárási útvonal:</b> Kezdjük el a törteket egy folytonos cikcakk vonallal (átlósan) sorba rendezni: $\\frac{1}{1} \\to \\frac{2}{1} \\to \\frac{1}{2} \\to \\frac{1}{3} \\to \\frac{2}{2} \\dots$<br>
+        4. Konstruáljunk egy $f: \\mathbb{Z}^+ \\to \\mathbb{Q}^+$ függvényt úgy, hogy az útvonal mentén minden egész számhoz hozzárendeljük a soron következő törtet. <i>Kikötés:</i> ha egy olyan törthöz érünk, aminek az értékét korábban már hozzárendeltük valamihez (pl. $\\frac{2}{2}=1$, ami már megvolt $\\frac{1}{1}$-ként), azt egyszerűen <b>átugorjuk</b>.<br>
+        5. Ez a leképezés kölcsönösen egyértelmű és ráképezés (bijekció), így a pozitív racionális számok halmaza megszámlálhatóan végtelen. $\\blacksquare$
+      </div>`
+  },
+  {
+    id: 7,
+    title: "Kontinuum számosság és a Kontinuum-hipotézis",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block thm">
+        <b>Tétel:</b> A valós számok halmaza ($\\mathbb{R}$) nem megszámlálható, számossága szigorúan nagyobb, mint a természetes számoké ($|\\mathbb{R}| > \\aleph_0$).<br>
+        <b>Tétel:</b> Bármely számosságnál van nagyobb számosság (a halmaz hatványhalmazának számossága mindig nagyobb az alaphalmazénál: $|A| < |\\mathcal{H}_A|$).
+      </div>
+      <div class="block def">
+        <b>Kontinuum számosság ($c$):</b> A valós számok halmazának számossága. Igazolható, hogy $c = 2^{\\aleph_0}$, és a $]0;1[$ nyílt intervallum, valamint az $n$-dimenziós terek pontjainak számossága is pontosan $c$.
+      </div>
+      <div class="block thm">
+        <div class="step-label">Matematikatörténet: A Kontinuum-hipotézis</div>
+        • Georg Cantor hipotézise szerint <i>nincs olyan számosság, ami szigorúan az $\\aleph_0$ és a $c$ közé esne</i>. Ezt David Hilbert 1900-ban a legfontosabb matematikai problémák listájának 1. helyére tette.<br>
+        • <b>A modern halmazelmélet válasza:</b> Kurt Gödel (1940) bebizonyította, hogy a hipotézis nem cáfolható, Paul Cohen (1963) pedig belátta, hogy nem is bizonyítható a standard ZFC halmazelméleti axiómarendszerben. Az állítás tehát a halmazelmélettől <b>független</b>, összhangban a Gödel-féle nemteljességi tétellel.
+      </div>`
+  }
+
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>

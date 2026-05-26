@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>1. tétel: Halmazok, halmazműveletek. Nevezetes ponthalmazok</h1>
+    <p class="subtitle">Alapfogalmak, De Morgan azonosságok, síkbeli és térbeli mértani helyek</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>Matematika emelt szóbeli felkészítő</footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  {
+    id: 0,
+    title: "Bevezetés és alkalmazások",
+    tags: ["app"],
+    content: `
+      <div class="step-label">Így kezdd a feleletet</div>
+      <div class="block app">
+        A <b>halmazelmélet</b> a mai tudásunk szerint a matematika alapja, hiszen minden matematikai ismeretünk teljes egészében visszavezethető rá.<br>
+        • <b>Történeti háttér:</b> Fejlődése a 19. század végén indult Georg Cantor munkásságával, és a 20. században nyerte el jelenleg ismert axiomatikus formáját.<br><br>
+        <b>Gyakorlati alkalmazások a felelet lezárásához:</b><br>
+        • <b>Matematika / Informatika:</b> Függvények értelmezési tartománya és értékkészlete, egyenletek megoldáshalmaza. Az informatikában az adatbázisok felépítése és a keresőmotorok (pl. Google) lekérdezései mind halmazműveleteken alapulnak.<br>
+        • <b>Statisztika:</b> Népszámlálások, közvélemény-kutatások adatelemzése, Venn-diagramos csoportosítások.<br>
+        • <b>Geometria:</b> A nevezetes ponthalmazokat geometriai szerkesztésekben (pontok kimenetének meghatározása két ponthalmaz metszeteként) és bizonyításokban használjuk, de megjelennek a csillagászatban (bolygópályák mint ellipszisek) és a számítógépes grafikában is.
+      </div>`
+  },
+  {
+    id: 1,
+    title: "Alapfogalmak és jelölések",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        <div class="step-label">Alapfogalom – Nem definiáljuk!</div>
+        A <b>halmaz</b> és a halmaz <b>eleme</b> matematikai alapfogalmak, így nem definiáljuk őket, csak körülírjuk (pl. összesség, csoport, benne van).<br>
+        • <b>A halmazlétezés feltétele:</b> Akkor beszélhetünk halmazról, ha bármely dologról egyértelműen és ellentmondásmentesen eldönthető, hogy hozzátartozik-e vagy sem.<br>
+        • <b>Jelölések:</b> Az elemeket kisbetűvel ($a \\in A$), a halmazokat nagybetűvel ($A$) jelöljük. Ha egy elem nem része a halmaznak: $b \\notin A$. Egy halmazban egy elem <i>pontosan egyszer</i> szerepelhet.<br>
+        • <b>Nevezetes számhalmazok:</b> $\\mathbb{N}$ (természetes számok), $\\mathbb{Z}$ (egész számok), $\\mathbb{Q}$ (racionális számok), $\\mathbb{Q}^*$ (irracionális számok), $\\mathbb{R}$ (valós számok). Részhalmazok jelölése pl.: $\\mathbb{Z}^+$, $\\mathbb{R}^-$.
+      </div>
+      <div class="block def">
+        <div class="step-label">Halmazok megadása és alapdefiníciók</div>
+        • <b>Megadási módok:</b> Elemeik felsorolásával (pl. $A = \\{a, b, c, d\\}$) vagy az elemekre jellemző közös tulajdonsággal (pl. $B = \\{x \\in \\mathbb{Z} : x \\le 5\\}$).<br>
+        • <b>Üres halmaz ($\\emptyset$ vagy $\\{\\}$):</b> Olyan halmaz, amelynek egyetlen eleme sincs.<br>
+        • <b>Egyenlőség ($A = B$):</b> Két halmaz egyenlő, ha pontosan ugyanazok az elemeik.<br>
+        • <b>Részhalmaz ($A \\subseteq B$):</b> $A$ részhalmaza $B$-nek, ha $A$ minden eleme eleme $B$-nek is.<br>
+        • <b>Valódi részhalmaz ($A \\subset B$):</b> $A$ valódi részhalmaza $B$-nek, ha $A \\subseteq B$, de $B$-nek van legalább egy olyan eleme, amely nem eleme $A$-nak.
+      </div>`
+  },
+  {
+    id: 2,
+    title: "Részhalmazok tulajdonságai (Tételek)",
+    tags: ["thm"],
+    content: `
+      <div class="block thm">
+        <div class="step-label">A reláció tulajdonságai</div>
+        Tetszőleges $A$, $B$ és $C$ halmazokra igazak a következő állítások:<br>
+        1. <b>Reflexivitás:</b> $A \\subseteq A$ (minden halmaz részhalmaza önmagának).<br>
+        2. <b>Tranzitivitás:</b> Ha $A \\subseteq B$ és $B \\subseteq C$, akkor $A \\subseteq C$.<br>
+        3. <b>Antiszimmetria:</b> Ha $A \\subseteq B$ és $B \\subseteq A$, akkor $A = B$.<br><br>
+        <span style="color:var(--teal)"><b>Vizsgáztatói megjegyzés:</b> Az antiszimmetria tételt rendkívül gyakran használjuk a szóbelin két összetett halmazművelet egyenlőségének precíz, kétoldalú bizonyítására!</span>
+      </div>`
+  },
+  {
+    id: 3,
+    title: "Alapvető halmazműveletek",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        • <b>Egyesítés / Unió ($A \\cup B$):</b> Azon elemek halmaza, amelyek legalább az egyik halmaznak elemei.<br>
+        $$\\{x : x \\in A \\lor x \\in B\\}$$
+        • <b>Metszet ($A \\cap B$):</b> Azon elemek halmaza, amelyek mindkét halmaznak elemei.<br>
+        $$\\{x : x \\in A \\land x \\in B\\}$$
+        • <b>Különbség ($A \\setminus B$):</b> Azon elemek halmaza, amelyek elemei $A$-nak, de nem elemei $B$-nek.<br>
+        $$\\{x : x \\in A \\land x \\notin B\\}$$
+        • <b>Szimmetrikus különbség ($A \\Delta B$):</b> Azon elemek halmaza, amelyek vagy csak $A$-nak, vagy csak $B$-nek elemei.<br>
+        $$A \\Delta B = \\{x : (x \\in A \\lor x \\in B) \\land x \\notin (A \\cap B)\\}$$
+        Alternatív felírása: $A \\Delta B = (A \\setminus B) \\cup (B \\setminus A)$<br><br>
+        • <b>Descartes- (direkt) szorzat ($A \\times B$):</b> Azon rendezett $(a, b)$ párok halmaza, amelyek első tagja az $A$ halmaz, második tagja pedig a $B$ halmaz eleme.<br>
+        $$A \\times B = \\{(a, b) : a \\in A \\land b \\in B\\}$$
+      </div>`
+  },
+  {
+    id: 4,
+    title: "Komplementer és a De Morgan-azonosságok",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <b>Alaphalmaz (Univerzum, $H$ vagy $U$):</b> Egy adott feladattal, problémával kapcsolatba hozható összes dolog halmaza.<br>
+        <b>Komplementer ($\\overline{A}$):</b> Az $A$ halmaz $H$-ra vonatkozó kiegészítő halmaza, azaz $H$ azon elemeinek halmaza, amelyek nem elemei $A$-nak.<br>
+        $$\\overline{A} = H \\setminus A, \\quad \\text{továbbá} \\quad \\overline{\\overline{A}} = A$$
+      </div>
+      <div class="block thm">
+        <div class="step-label">De Morgan-azonosságok</div>
+        Az unió és a metszet komplementere felírható az alábbiak szerint:<br>
+        • <b>Unió komplementere:</b> $\\overline{A \\cup B} = \\overline{A} \\cap \\overline{B}$ (az unió komplementere a komplementerek metszete).<br>
+        • <b>Metszet komplementere:</b> $\\overline{A \\cap B} = \\overline{A} \\cup \\overline{B}$ (a metszet komplementere a komplementerek uniója).<br><br>
+        <b>Következmény tétel:</b> Bármely halmazokra vonatkozó műveletsor felírható (megfelelő zárójelezéssel) csak unió- és komplementerképzéssel, vagy csak metszet- és komplementerképzéssel.
+      </div>`
+  },
+  {
+    id: 5,
+    title: "Műveleti tulajdonságok és Bizonyítás (Disztributivitás)",
+    tags: ["thm", "biz"],
+    content: `
+      <div class="block thm">
+        Az unió- és metszetképzés tulajdonságai: <b>idempotens</b> ($A \\cup A = A$), <b>kommutatív</b> ($A \\cup B = B \\cup A$), <b>asszociatív</b> ($(A \\cup B) \\cup C = A \\cup (B \\cup C)$) és mindkettő <b>disztributív</b> a másikra nézve.
+      </div>
+      <div class="block biz">
+        <div class="step-label">Tétel bizonyítása Venn-diagrammal</div>
+        <b>Bizonyítandó tétel:</b> $A \\cap (B \\cup C) = (A \\cap B) \\cup (A \\cap C)$<br><br>
+        <b>A szóbeli bizonyítás logikai menete:</b><br>
+        1. Rajzolj fel a táblára egy általános, 3 egymást metsző körből álló Venn-diagramot ($A, B, C$).<br>
+        2. <b>Bal oldal levezetése:</b> Satírozd be először a $(B \\cup C)$ uniót. Ezután keresd meg ennek a satírozott résznek a közös metszetét az $A$ körrel. A kapott végső terület az $A$ kör azon részeit fedi le, amelyek átfednek $B$-vel vagy $C$-vel.<br>
+        3. <b>Jobb oldal levezetése:</b> Egy új, tiszta diagramon jelöld be az $(A \\cap B)$ metszetet, majd külön az $(A \\cap C)$ metszetet. Ha ezt a két kijelölt területet egyesíted (unió), pontosan ugyanazt a formát kapod, mint a bal oldalon.<br>
+        4. <b>Konklúzió:</b> Mivel a két különálló részfolyamat eredményeként kapott végső diagramok teljesen azonos részterületeket jelölnek ki, a disztributivitás tétele tetszőleges halmazokra fennáll. $\\blacksquare$<br><br>
+        <i>Bizottsági tipp: Ha a feladatlap a De Morgan-azonosságok belátását kéri tőled, pontosan ugyanezzel a lépésről lépésre történő Venn-diagramos satírozással kell demonstrálnod az egyenlőséget!</i>
+      </div>`
+  },
+  {
+    id: 6,
+    title: "Nevezetes ponthalmazok a síkban",
+    tags: ["def", "thm"],
+    content: `
+      <div class="block def">
+        <b>Mértani hely (Nevezetes ponthalmaz):</b> Olyan pontok összessége a térben vagy a síkban, amelyek egy vagy több rögzített geometriai alakzattól vett távolságuk alapján egy meghatározott, közös feltételnek tesznek eleget.
+      </div>
+      <div class="block thm">
+        • <b>Kör:</b> Azon pontok halmaza a síkban, amelyek a sík egy adott pontjától (középpont) adott rögzített távolságra (sugár) vannak.<br>
+        • <b>Szakaszfelező merőleges:</b> Azon pontok halmaza a síkban, amelyek egyenlő távolságra vannak a sík két különböző pontjától.<br>
+        <div class="block biz" style="margin: 5px 0 10px 0; font-size: 13px;">
+          <i>Figyelem! Definíció szerint a szakaszfelező merőleges egy olyan egyenes, ami átmegy a felezőponton és merőleges a szakaszra. A távolsággal vett megfogalmazás egy <b>tétel</b>, aminek mindkét irányát igazolni kell:</i><br>
+          1. A szakaszfelező merőleges minden pontja egyenlő távolságra van a két végponttól.<br>
+          2. Ha egy pont egyenlő távolságra van a két végponttól, akkor az rajta van a szakaszfelező merőlegen.
+        </div>
+        • <b>Szögfelező:</b> Azon pontok halmaza a síkban, amelyek egyenlő távolságra vannak a sík két metsző egyenesétől (ez a két egyenes által bezárt négy szög két szögfelező egyenese, melyek egymásra merőlegesek).<br>
+        • <b>Középvonal (Párhuzamos egyeneseknél):</b> Azon pontok halmaza a síkban, amelyek egyenlő távolságra vannak a sík két, egymással párhuzamos egyenesétől.<br>
+        • <b>Parabola:</b> Azon pontok halmaza a síkban, amelyek egyenlő távolságra vannak a sík egy adott egyenesétől (vezéregyenes / direktrix) és egy arra nem illeszkedő adott ponttól (fókusz). A pont és az egyenes távolsága a parabola paramétere ($p$).<br>
+        • <b>Ellipszis:</b> Azon pontok halmaza a síkban, amelyeknek a sík két adott pontjától (fókuszok) mért távolságaik összege állandó, és ez az összeg nagyobb a két pont távolságánál ($r_1 + r_2 = 2a > 2c$).<br>
+        • <b>Hiperbola:</b> Azon pontok halmaza a síkban, amelyeknek a sík két különböző pontjától (fókuszok) mért távolságaik különbségének abszolút értéke állandó, és ez a különbség kisebb a két pont távolságánál ($|r_1 - r_2| = 2a < 2c$).
+      </div>`
+  },
+  {
+    id: 7,
+    title: "Analógiák a térben",
+    tags: ["thm"],
+    content: `
+      <div class="block thm">
+        Ha a síkbeli távolságon alapuló feltételeket kiterjesztjük a 3 dimenziós térre, gyönyörű geometriai analógiákat és forgástesteket kapunk:<br><br>
+        <table style="width:100%; border-collapse: collapse; font-size: 13.5px;">
+          <tr style="border-bottom: 2px solid var(--border); font-weight:600;">
+            <td style="padding: 6px 4px;">Síkban (2D)</td>
+            <td style="padding: 6px 4px;">Térben (3D)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 6px 4px;">Kör</td>
+            <td style="padding: 6px 4px;"><b>Gömb</b></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 6px 4px;">Szakaszfelező merőleges (egyenes)</td>
+            <td style="padding: 6px 4px;"><b>Szakaszfelező sík</b></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 6px 4px;">Szögfelező egyenes</td>
+            <td style="padding: 6px 4px;"><b>Szögfelező sík</b></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 6px 4px;">Párhuzamos egyenesek felezővonala</td>
+            <td style="padding: 6px 4px;"><b>Párhuzamos síkok felezősíkja</b></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 6px 4px;">Parabola (pont és egyenes)</td>
+            <td style="padding: 6px 4px;"><b>Forgási paraboloid</b> (pont és sík távolsága)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 6px 4px;">Ellipszis</td>
+            <td style="padding: 6px 4px;"><b>Forgási ellipszoid</b></td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 6px 4px;">Hiperbola</td>
+            <td style="padding: 6px 4px;"><b>Forgási hiperboloid</b></td>
+          </tr>
+        </table>
+      </div>`
+  }
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>
