@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematika Emelt Szóbeli</title>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&display=swap');
+
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface2: #f0efea;
+    --border: rgba(0,0,0,0.1);
+    --text: #1a1a18;
+    --muted: #6b6a65;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --teal-bg: #E1F5EE;   --teal: #085041;
+    --amber-bg: #FAEEDA;  --amber: #633806;
+    --blue-bg: #E6F1FB;   --blue: #0C447C;
+    --purple-bar: #7F77DD;
+    --teal-bar: #1D9E75;
+    --amber-bar: #BA7517;
+    --blue-bar: #378ADD;
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 60px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--purple-bg);
+    color: var(--purple);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.done { background: var(--teal-bar); }
+  .dot.active { background: var(--purple-bar); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .card-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    user-select: none;
+    transition: background .15s;
+  }
+  .card-header:hover { background: var(--surface2); }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .chevron {
+    font-size: 11px;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .chevron.open { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .card-body.open { display: block; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .tag-def  { background: var(--purple-bg); color: var(--purple); }
+  .tag-thm  { background: var(--teal-bg);   color: var(--teal); }
+  .tag-biz  { background: var(--amber-bg);  color: var(--amber); }
+  .tag-app  { background: var(--blue-bg);   color: var(--blue); }
+
+  .block {
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .block:first-child { margin-top: 0; }
+  .block.def { border-left-color: var(--purple-bar); }
+  .block.thm { border-left-color: var(--teal-bar); }
+  .block.biz { border-left-color: var(--amber-bar); }
+  .block.app { border-left-color: var(--blue-bar); }
+
+  .step-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  b { font-weight: 600; }
+  i { font-style: italic; }
+
+  footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <nav style="display: flex; margin-bottom: 20px;">
+    <a href="index.html" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #6b6a65; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: all 0.15s ease;">← Főoldal</a>
+  </nav>
+  <header>
+    <div class="badge">Emelt szintű szóbeli</div>
+    <h1>8. tétel: A leíró statisztika jellemzői, diagramok. Nevezetes középértékek</h1>
+    <p class="subtitle">Adatsokaságok elemzése, középértékek és szóródási mutatók, adatvizualizáció, valamint a nevezetes közepek közötti egyenlőtlenség-rendszer</p>
+  </header>
+
+  <div class="progress-row">
+    <span class="progress-label">Haladás:</span>
+    <div id="progress"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer></footer>
+</div>
+
+<script>
+const sections = [
+  // ----------------------------------------------------
+  {
+    id: 0,
+    title: "A statisztika alapfogalmai: adatsokaság kontra halmaz",
+    tags: ["def"],
+    content: `
+      <div class="block def">
+        <div class="step-label">A statisztika definíciója</div>
+        A <b>statisztika</b> a valóság számszerű információinak megfigyelésére, összegzésére, elemzésére és modellezésére irányuló gyakorlati tevékenység és tudomány, amely mért vagy gyűjtött adatokon alapszik.
+      </div>
+      <div class="block def">
+        <div class="step-label">Precíziós különbségtételek</div>
+        Az egyértelműség és a matematikai precizitás végett szigorúan meg kell különböztetnünk egymástól a következő fogalmakat:<br><br>
+        • <b>Adat és elem:</b> Az adat a megfigyelt tulajdonság konkrét értéke, míg az elem maga a megfigyelés alanya.<br>
+        • <b>Adatsokaság és halmaz:</b> 
+        Míg a halmazelméletben egy elem definíció szerint legfeljebb <i>egyszer</i> fordulhat elő, addig egy adatsokaságban ugyanaz az adat <i>többször is</i> szerepelhet (ezt a gyakoriság írja le).<br>
+        Továbbá egy halmazemben az elemek sorrendje irreleváns, míg egy adatsokaságban az adatok egymásutánisága, időrendi sorrendje gyakran kulcsfontosságú jellemző (pl. részvényárfolyamok alakulása, lázgörbe).
+      </div>`
+  },
+  {
+    id: 1,
+    title: "Középértékek (Átlag, módusz, medián)",
+    tags: ["def"],
+    content: `
+      <div class="step-label">Az adatsokaság centrummutatói</div>
+      <div class="block def">
+        <b>1. Számtani átlag:</b> Az $\\{a_1; a_2; a_3; \\dots; a_n\\}$ adatsokaság átlagán a benne szereplő adatok számtani közepét értjük:<br>
+        $$\\bar{x} = \\frac{a_1 + a_2 + a_3 + \\dots + a_n}{n} = \\frac{\\sum_{i=1}^{n} a_i}{n}$$
+        Ha az adatsokaságban vannak egyforma adatok, akkor az átlagot azok <b>súlyozott közepeként</b> is számolhatjuk (ahol $k_i$ az egyes $a_i$ értékek előfordulási száma, azaz súlya):<br>
+        $$\\bar{x}_w = \\frac{\\sum_{i=1}^{l} k_i a_i}{\\sum_{i=1}^{l} k_i} \\quad \\text{ahol} \\quad \\sum_{i=1}^{l} k_i = n$$
+      </div>
+      <div class="block def">
+        <b>2. Módusz:</b> Az adatsokaságban <u>leggyakrabban előforduló</u> adat. Ha több ilyen is van, akkor a relatív gyakoriságuk függvényében vagy mindegyiket módusznak nevezzük, vagy azt mondjuk, hogy az adatsokaságnak nincs módusza.
+      </div>
+      <div class="block def">
+        <b>3. Medián:</b> Az adatokat nagyság szerinti (növekvő vagy csökkenő) sorrendbe rendezve a <u>középső</u> adat. Ha az adatok száma ($n$) páratlan, akkor a medián a pontosan középen álló elem. Ha $n$ páros, akkor a két középső adat számtani közepe.
+      </div>`
+  },
+  {
+    id: 2,
+    title: "Szóródási mutatók (Terjedelem, átlagos abszolút eltérés, szórás)",
+    tags: ["def"],
+    content: `
+      <div class="step-label">A centrumtól való eltérések jellemzése</div>
+      <div class="block def">
+        <b>Terjedelem:</b> Az adatsokaság legnagyobb és legkisebb adatának különbsége ($x_{\\text{max}} - x_{\\text{min}}$).<br>
+        <b>Osztályok:</b> Az adatok elemzéséhez azokat nagyság szerint osztályokba bonthatjuk, melyek <i>osztályterjedelme</i> lehet egyenlő vagy különböző is.<br>
+        <b>Gyakoriság és relatív gyakoriság:</b> Az azonos adatok előfordulásának száma a <i>gyakoriság</i> ($k_i$), a teljes adatsokasághoz viszonyított aránya pedig a <i>relatív gyakoriság</i> ($\\frac{k_i}{n}$ vagy százalékos formában).
+      </div>
+      <div class="block def">
+        <div class="step-label">Miért nem jó az eltérések sima átlaga?</div>
+        Egy mérés jóságának vizsgálatakor a hibahatár elemzésére <u>nem használhatjuk az átlagtól való eltérések átlagát</u>, mert a pozitív és negatív irányú eltérések összege matematikailag kioltja egymást, így az <b>minden esetben 0 lenne</b>. Emiatt az alábbi két mutatót használjuk:
+      </div>
+      <div class="block def">
+        <b>1. Átlagos abszolút eltérés:</b> Az átlagtól vett eltérések abszolút értékeinek számtani közepe:<br>
+        $$\\Delta a = \\frac{\\sum_{i=1}^{n} |a_i - \\bar{x}|}{n}$$
+      </div>
+      <div class="block def">
+        <b>2. Szórás (Standard deviáció):</b> Az átlagtól vett eltérések négyzetes közepe:<br>
+        $$\\sigma = \\sqrt{\\frac{\\sum_{i=1}^{n} (a_i - \\bar{x})^2}{n}}$$
+      </div>`
+  },
+  {
+    id: 3,
+    title: "Adatvizualizáció: Diagramtípusok és kritikus elemzésük",
+    tags: ["thm"],
+    content: `
+      <div class="step-label">A megfelelő diagram megválasztása</div>
+      <div class="block thm">
+        • <b>Kör- vagy szalagdiagram:</b> Akkor alkalmazzuk, ha az <u>ugyanabban az időben létező</u> adatok egymáshoz és a <u>teljes egészhez</u> viszonyított arányát akarjuk bemutatni (pl. iskolai osztályzatok megoszlása, választási eredmények). A körcikkek középponti szöge egyenesen arányos a relatív gyakorisággal.<br><br>
+        • <b>Oszlopdiagram:</b> Akkor használjuk, ha az ugyanabban az időben létező adatok egymáshoz viszonyított arányát és az egyes adatok <u>konkrét gyakoriságát</u> akarjuk szemléltetni. Az oszlopok magassága magát a gyakoriságot mutatja.<br><br>
+        • <b>Vonaldiagram:</b> Ha az adatok értéke mellett azok <u>keletkezésének sorrendje (időbelisége)</u> is fontos jellemző (pl. devizaárfolyamok, tőzsdeindexek, lázgörbe). Ekkor a diszkrét koordináta-pontokat folytonos vonallal kötjük össze.
+      </div>
+      <div class="block thm">
+        <div class="step-label">A diagramok kritikus szemlélete (Manipuláció)</div>
+        Oszlop- és vonaldiagram esetén a függőleges tengely skálázását (az origót) nem mindig az $y = 0$ egyenestől indítják. Ez függ az adatsokaság jellegétől (pl. ha egy ország lakosságszámának minimális változását akarjuk kiemelni, a tengelyt eltolhatjuk). <br><br>
+        A politikai vagy gazdasági médiában bemutatott diagramoknál <b>rendkívül fontos a kritikus szemlélet</b>: a tengelyek önkényes megvágásával, a léptékek megváltoztatásával a jelentéktelen növekedés is drasztikusnak mutatható, amivel könnyen manipulálhatják a nézők gondolkodását.
+      </div>`
+  },
+  {
+    id: 4,
+    title: "A négy nevezetes középérték precíz definíciója",
+    tags: ["def"],
+    content: `
+      <div class="step-label">Pozitív valós számok közepei ($a_i \\in \\mathbb{R}^+, \\, n \\ge 2$)</div>
+      <div class="block def">
+        <b>Számtani (aritmetikai) közép ($A$):</b><br>
+        $$A(a_1, a_2, \\dots, a_n) = \\frac{a_1 + a_2 + \\dots + a_n}{n}$$
+      </div>
+      <div class="block def">
+        <b>Mértani (geometriai) közép ($G$):</b><br>
+        $$G(a_1, a_2, \\dots, a_n) = \\sqrt[n]{a_1 \\cdot a_2 \\cdot \\dots \\cdot a_n}$$
+      </div>
+      <div class="block def">
+        <b>Harmonikus közép ($H$):</b> A reciprok értékek számtani közepének a reciproka:<br>
+        $$H(a_1, a_2, \\dots, a_n) = \\frac{n}{\\frac{1}{a_1} + \\frac{1}{a_2} + \\dots + \\frac{1}{a_n}}$$
+      </div>
+      <div class="block def">
+        <b>Négyzetes (kvadratikus) közép ($Q$):</b> A számok négyzeteinek számtani közepéből vont négyzetgyök:<br>
+        $$Q(a_1, a_2, \\dots, a_n) = \\sqrt{\\frac{a_1^2 + a_2^2 + \\dots + a_n^2}{n}}$$
+      </div>`
+  },
+  {
+    id: 5,
+    title: "A nevezetes közepek közötti egyenlőtlenség-rendszer",
+    tags: ["thm"],
+    content: `
+      <div class="block thm">
+        <div class="step-label">Általános rendezési tétel</div>
+        Tetszőleges $a_i \\in \\mathbb{R}^+$ ($n \\ge 2$) valós számok esetén a négy nevezetes középérték között szigorú és megfordíthatatlan nagyságrendi kapcsolat áll fenn:<br>
+        $$\\text{min}(a_i) \\le H \\le G \\le A \\le Q \\le \\text{max}(a_i)$$
+        Azaz: a <b>harmonikus $\\le$ mértani $\le$ számtani $\le$ négyzetes</b> közép.<br><br>
+        <b>Az egyenlőség feltétele:</b> A közepek között az egyenlőség ($H=G=A=Q$) <u>akkor és csak akkor</u> áll fenn, ha az adatsokaság összes eleme hajszálpontosan megegyezik egymással:<br>
+        $$a_1 = a_2 = a_3 = \\dots = a_n$$
+      </div>`
+  },
+  {
+    id: 6,
+    title: "A kétváltozós harmonikus és számtani közép tételének bizonyítása",
+    tags: ["biz"],
+    content: `
+      <div class="block biz">
+        <div class="step-label">Tétel állítása</div>
+        Ha $a, b \\in \\mathbb{R}^+$, akkor $H(a,b) \\le A(a,b)$, azaz:<br>
+        $$\\frac{2}{\\frac{1}{a} + \\frac{1}{b}} \\le \\frac{a+b}{2}$$
+        és az egyenlőség kizárólag $a = b$ esetén teljesül.
+      </div>
+      <div class="block biz">
+        <div class="step-label">Bizonyítás ekvivalens átalakításokkal</div>
+        Alakítsuk át a bal oldali törtet a nevező közös nevezőre hozásával:<br>
+        $$\\frac{2}{\\frac{a+b}{ab}} \\le \\frac{a+b}{2} \\implies \\frac{2ab}{a+b} \\le \\frac{a+b}{2}$$
+        Mivel $a, b > 0$, ezért a nevező $(a+b) > 0$. Szorozzuk meg a mindkét oldalt a pozitív $2(a+b)$ kifejezéssel (a relációjel nem változik):<br>
+        $$4ab \\le (a+b)^2$$
+        Fejtsük ki a jobb oldali nevezetes azonosságot:<br>
+        $$4ab \\le a^2 + 2ab + b^2$$
+        Redukáljuk nullára az egyenlőtlenséget, azaz vonjunk ki mindkét oldalból $4ab$-t:<br>
+        $$0 \\le a^2 - 2ab + b^2$$
+        A jobb oldalon ismerjük fel a teljes négyzet alakot:<br>
+        $$0 \\le (a - b)^2$$
+        Mivel egy valós szám négyzete <u>mindig nagyobb vagy egyenlő, mint nulla</u>, ez az utolsó állítás identikusan igaz minden valós számra. <br>
+        Mivel végig <b>ekvivalens átalakításokat</b> végeztünk (pozitív kifejezéssel szoroztunk), a kiinduló állításunk is igaz.<br><br>
+        <b>Egyenlőség vizsgálata:</b> A jobb oldalon a $(a-b)^2 = 0$ egyenlőség pontosan akkor teljesül, ha a négyzetalap nulla, vagyis $a - b = 0 \\implies a = b$. A tételt igazoltuk. $\\blacksquare$
+      </div>`
+  },
+  {
+    id: 7,
+    title: "Gyakorlati és matematikai alkalmazások",
+    tags: ["app"],
+    content: `
+      <div class="step-label">Hol találkozunk ezekkel a mindennapokban?</div>
+      <div class="block app">
+        • <b>Társadalom- és természetbölcselet:</b> A leíró statisztika alapvető eszköze a demográfiai elemzéseknek (pl. korfa az öregedő társadalmak modellezésére), a meteorológiának (átlaghőmérséklet, csapadék szórása) és a gazdaságnak (fogyasztói kosár indexe, inflációmérés).<br><br>
+        • <b>Fizikai és mérnöki számítások (A közepek jelentése):</b><br>
+        &nbsp;&nbsp;- A <i>harmonikus közepet</i> használjuk például átlagsebesség számításánál, ha az út részszakaszai egyenlő hosszúak, de a sebességek különböznek.<br>
+        &nbsp;&nbsp;- A <i>négyzetes közép</i> jelenik meg a váltakozó áram effektív feszültségének és áramerősségének meghatározásakor.<br><br>
+        • <b>Szélsőérték-feladatok algebrai megoldása:</b> A nevezetes közepek közötti egyenlőtlenségeket (leggyakrabban a számtani-mértani egyenlőtlenséget) kiválóan lehet használni függvények maximumának vagy minimumának megkeresésére differenciálszámítás (deriválás) nélkül is. Például adott kerületű téglalapok közül a maximális területű a négyzet lesz (egyenlőség esete).
+      </div>`
+  }
+  // ----------------------------------------------------
+];
+
+const tagLabels = { def: 'Definíció', thm: 'Tétel', biz: 'Bizonyítás', app: 'Felelet / Alk.' };
+const done = new Set();
+const progressEl = document.getElementById('progress');
+const container = document.getElementById('sections');
+
+progressEl.style.display = 'flex';
+progressEl.style.gap = '6px';
+progressEl.style.flexWrap = 'wrap';
+
+sections.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.title = s.title;
+  dot.onclick = () => openCard(s.id);
+  progressEl.appendChild(dot);
+});
+
+sections.forEach(s => {
+  const tagHTML = s.tags.map(t => `<span class="tag tag-${t}">${tagLabels[t]}</span>`).join('');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.id = 'card-' + s.id;
+  card.innerHTML = `
+    <div class="card-header" onclick="toggleCard(${s.id})">
+      <div class="title-row">${tagHTML}<span class="card-title">${s.title}</span></div>
+      <span class="chevron" id="chev-${s.id}">▼</span>
+    </div>
+    <div class="card-body" id="body-${s.id}">${s.content}</div>`;
+  container.appendChild(card);
+});
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+  if (!isOpen) { 
+    done.add(id); 
+    updateDots();
+    if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  }
+}
+
+function openCard(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  body.classList.add('open');
+  chev.classList.add('open');
+  done.add(id);
+  updateDots();
+  if (typeof MathJax !== 'undefined') { MathJax.typesetPromise([body]); }
+  document.getElementById('card-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateDots() {
+  const dots = progressEl.querySelectorAll('.dot');
+  dots.forEach((d, i) => {
+    d.className = 'dot' + (done.has(i) ? ' done' : '');
+  });
+}
+
+toggleCard(0);
+</script>
+</body>
+</html>
